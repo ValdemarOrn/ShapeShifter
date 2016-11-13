@@ -39,11 +39,6 @@ namespace DspAmp
 
         public void InitializeDevice()
         {
-            var b = new Butterworth(48000);
-            b.Order = 1;
-            b.CutoffHz = 8000;
-            b.Update();
-
             DevInfo.DeviceID = "Low Profile - DSP Amp";
             DevInfo.Developer = "Valdemar Erlingsson";
             DevInfo.UnsafeProcessing = false;
@@ -146,7 +141,9 @@ namespace DspAmp
                 else if (index == 2)
                 {
                     ParameterInfo[index].Display = (value).ToString("f3");
-                    stage.FeedbackAmount = value;
+                    stage.LowFeedback= value;
+                    stage.HighFeedback = value;
+
                 }
                 else if (index == 3)
                 {

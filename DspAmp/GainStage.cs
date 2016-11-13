@@ -12,9 +12,6 @@ namespace DspAmp
     {
         private double fs;
         private double feedback;
-        private double lpY1;
-        private double hpY1;
-        private double hpX1;
         private double lowpassCutoff;
         private double highpassCutoff;
         private TfUtil lp, hp;
@@ -32,7 +29,9 @@ namespace DspAmp
 
         public double InputGain = 1.0;
         public double StageGain = 10.0;
-        public double FeedbackAmount = 0.99;
+        public double LowFeedback = 0.99;
+        public double HighFeedback = 0.99;
+        public double WideSpectrumFeedback = 0.0;
         public double Bias = 0.0;
         
 
@@ -87,19 +86,16 @@ namespace DspAmp
 
                 var lowpassed = lp.Process1(stageOutput, false);
                 var highpassed = hp.Process1(stageOutput, false);
-                var feedbackSum = lowpassed + highpassed;
-                //var feedbackSum = output;
-
-                feedback = FeedbackAmount * feedbackSum;
+                
+                feedback = LowFeedback * lowpassed 
+                    + HighFeedback * highpassed 
+                    + WideSpectrumFeedback * stageOutput;
 
                 // todo, move 2 lines up
                 if (Math.Abs(stageOutput - prevOutput) < 0.0001 && Math.Abs(diff) < 0.0001)
                 {
-                    lp.Process1(stageOutput, true);
-                    hp.Process1(stageOutput, true);
-                    //hpX1 = stageOutput;
-                    //lpY1 = lowpassed;
-                    //hpY1 = highpassed;
+                    lp.Process1(stageOutput);
+                    hp.Process1(stageOutput);
                     break;
                 }
 
@@ -115,17 +111,7 @@ namespace DspAmp
 
             return stageOutput;
         }
-
-        private double ComputeLpAlpha(double fc, double ts)
-        {
-            return (2 * Math.PI * ts * fc) / (2 * Math.PI * ts * fc + 1);
-        }
-
-        private double ComputeHpAlpha(double fc, double ts)
-        {
-            return (1) / (2 * Math.PI * ts * fc + 1);
-        }
-
+        
         private double GF(double input)
         {
             /*var d = -input * StageGain;
