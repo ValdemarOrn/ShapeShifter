@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Boost.cs" />
     <Compile Include="DspAmpTest.cs" />
     <Compile Include="GainStage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

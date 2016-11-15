@@ -15,6 +15,7 @@ namespace DspAmp
         private double lowpassCutoff;
         private double highpassCutoff;
         private TfUtil lp, hp;
+        private TfUtil inputHp;
 
         public GainStage(double fs)
         {
@@ -22,18 +23,32 @@ namespace DspAmp
 
             lp = new TfUtil(new[] { 0.0, 0.0 }, new[] { 0.0, 0.0 });
             hp = new TfUtil(new[] { 0.0, 0.0 }, new[] { 0.0, 0.0 });
+            inputHp = new TfUtil(new[] { 0.0, 0.0 }, new[] { 0.0, 0.0 });
 
             LowpassCutoff = 200;
             HighpassCutoff = 2000;
+            InputHighpass = 40;
         }
 
-        public double InputGain = 1.0;
+        public double Output;
+
+        /// <summary>
+        /// This is used to tweak the gain transfer functions, and to set the initial training rate
+        /// of feedback. It is NOT a necessary value, and some stages like a triode will have a fixed
+        /// value based on the type of valve, e.g. mu = 100 for a 12ax7. mu = StageGain essentially
+        /// </summary>
         public double StageGain = 10.0;
+        public double InputGain = 1.0;
         public double LowFeedback = 0.99;
         public double HighFeedback = 0.99;
         public double WideSpectrumFeedback = 0.0;
         public double Bias = 0.0;
-        
+
+        // used for gain stages like a tub triode, where the output is >=0
+        // between 0...Unipolar supply (voltage)
+        public bool UnipolarMode;
+        public double UnipolarSupply;
+        private double inputHighpass;
 
         public double LowpassCutoff
         {
@@ -57,12 +72,24 @@ namespace DspAmp
             }
         }
 
+        public double InputHighpass
+        {
+            get { return inputHighpass; }
+            set
+            {
+                inputHighpass = value;
+                var z = Butterworth.ComputeCoefficients(fs, true, inputHighpass, 1);
+                inputHp.Update(z.Item1, z.Item2);
+            }
+        }
+
         public double Process(double input)
         {
+            input = inputHp.Process1(input);
+
             input = input * InputGain + Bias;
             
             int iters = 0;
-            //feedback = 0.0;
 
             double prevOutput = -1000.0;
             double prevDiff = 0.0;
@@ -82,19 +109,35 @@ namespace DspAmp
                     gTrain = gTrain * 1.1;
 
                 stageInput = stageInput + gTrain * diff;
-                stageOutput = GF(stageInput);
+                //stageOutput = Stages.BipolarTanh(stageInput, StageGain);
+                stageOutput = Stages.UnipolarTanh(stageInput, UnipolarSupply);
+                double lowpassed;
+                double wideSpectrum;
+                double unipolarFeedbackSignal;
 
-                var lowpassed = lp.Process1(stageOutput, false);
+                if (UnipolarMode)
+                {
+                    unipolarFeedbackSignal = 100 - stageOutput;
+                    lowpassed = -lp.Process1(unipolarFeedbackSignal, false);
+                    wideSpectrum = -unipolarFeedbackSignal;
+                }
+                else
+                {
+                    unipolarFeedbackSignal = stageOutput;
+                    lowpassed = lp.Process1(unipolarFeedbackSignal, false);
+                    wideSpectrum = stageOutput;
+                }
+                
                 var highpassed = hp.Process1(stageOutput, false);
                 
                 feedback = LowFeedback * lowpassed 
                     + HighFeedback * highpassed 
-                    + WideSpectrumFeedback * stageOutput;
+                    + WideSpectrumFeedback * wideSpectrum;
 
                 // todo, move 2 lines up
                 if (Math.Abs(stageOutput - prevOutput) < 0.0001 && Math.Abs(diff) < 0.0001)
                 {
-                    lp.Process1(stageOutput);
+                    lp.Process1(unipolarFeedbackSignal);
                     hp.Process1(stageOutput);
                     break;
                 }
@@ -105,30 +148,36 @@ namespace DspAmp
                 if (iters > 200)
                 {
                     feedback = 0.0;
-                    return 0.0;
+                    return Output; // return same value as last time as a fallback
                 }
             }
 
-            return stageOutput;
-        }
-        
-        private double GF(double input)
-        {
-            /*var d = -input * StageGain;
-            if (d < -100)
-                d = -100 + (d + 100) * 0.01;
-            if (d > 100)
-                d = 100 + (d - 100) * 0.01;
-
-            return d;*/
-
-
-            return -Math.Tanh(input * Math.Sqrt(StageGain)) * Math.Sqrt(StageGain);
+            Output = stageOutput;
+            return Output;
         }
 
-        private double GF2(double input)
+        public static class Stages
         {
-            return Math.Sqrt(StageGain) - Math.Tanh((input + 1) * Math.Sqrt(StageGain)) * Math.Sqrt(StageGain);
+            public static double HardClipper(double input, double stageGain)
+            {
+                var d = -input * stageGain;
+                if (d < -100)
+                    d = -100 + (d + 100) * 0.01;
+                if (d > 100)
+                    d = 100 + (d - 100) * 0.01;
+
+                return d;
+            }
+
+            public static double BipolarTanh(double input, double stageGain)
+            {
+                return -Math.Tanh(input * Math.Sqrt(stageGain)) * Math.Sqrt(stageGain);
+            }
+
+            public static double UnipolarTanh(double input, double maxValue)
+            {
+                return maxValue - (1 + Math.Tanh((2 * input +2.5))) * 0.5 * 0.9 * maxValue;
+            }
         }
     }
 }

@@ -25,6 +25,8 @@ namespace DspAmp
 
         public double Samplerate;
         private GainStage stage;
+        Boost boost;
+        
         private double outputGain;
         
         public TestbedPlugin()
@@ -35,6 +37,14 @@ namespace DspAmp
             PortInfo = new Port[2];
 
             stage = new GainStage(Samplerate);
+            stage.UnipolarMode = true;
+            stage.UnipolarSupply = 100;
+
+            boost = new Boost(Samplerate, 64);
+            boost.Drive = 1;
+            boost.Mix = 1.0;
+            boost.Tone = 1.0;
+            boost.Tightness = 0.4;
         }
 
         public void InitializeDevice()
@@ -52,7 +62,7 @@ namespace DspAmp
             DevInfo.VstId = DeviceUtilities.GenerateIntegerId(DevInfo.DeviceID);
 
             PortInfo[0].Direction = PortDirection.Input;
-            PortInfo[0].Name = "Stereo Input";
+            PortInfo[0].Name = "Stereo Input"; 
             PortInfo[0].NumberOfChannels = 2;
 
             PortInfo[1].Direction = PortDirection.Output;
@@ -93,13 +103,15 @@ namespace DspAmp
         public void ProcessSample(double[][] inputs, double[][] outputs, uint bufferSize)
         {
             var input = inputs[0];
-            
-            for (int i = 0; i < bufferSize; i++)
+            boost.Process(input, outputs[0]);
+            Array.Copy(outputs[0], outputs[1], bufferSize);
+
+            /*for (int i = 0; i < bufferSize; i++)
             {
                 var processed = stage.Process(input[i]) * outputGain;
                 outputs[0][i] = processed;
                 outputs[1][i] = processed;
-            }
+            }*/
         }
 
         public void ProcessSample(IntPtr input, IntPtr output, uint inChannelCount, uint outChannelCount, uint bufferSize)
