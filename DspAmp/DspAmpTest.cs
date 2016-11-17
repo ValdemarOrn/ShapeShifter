@@ -24,8 +24,8 @@ namespace DspAmp
         // --------------- Necessary Parameters ---------------
 
         public double Samplerate;
-        private GainStage stage;
-        Boost boost;
+        private readonly GainStage stage;
+        private readonly Boost boost;
         
         private double outputGain;
         

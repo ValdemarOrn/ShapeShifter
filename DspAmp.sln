@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DspAmp.Test", "DspAmp.Test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowProfile.Visuals", "..\..\Libraries\LowProfile.Common\LowProfile.Visuals\LowProfile.Visuals.csproj", "{4CD32A63-494F-4769-A07D-802F1E9945A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DspAmp.Ui", "DspAmp.Ui\DspAmp.Ui.csproj", "{707AC4D8-2D54-4666-97FB-A218C5AA404A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DspAmp.Native", "DspAmp.Native\VstNoiseGate.vcxproj", "{FEAC7618-D4F5-402D-B498-AB7AD1A52324}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,8 +39,8 @@ Global
 		{F014A6A2-9DDE-48BB-BBD1-984B21E63D61}.Release|x86.Build.0 = Release|Any CPU
 		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|x64.ActiveCfg = Debug|x64
-		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|x64.Build.0 = Debug|x64
+		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|x64.Build.0 = Debug|Any CPU
 		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|x86.ActiveCfg = Debug|x86
 		{4905489D-6F81-4129-8780-744CED5B3269}.Debug|x86.Build.0 = Debug|x86
 		{4905489D-6F81-4129-8780-744CED5B3269}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +73,30 @@ Global
 		{4CD32A63-494F-4769-A07D-802F1E9945A7}.Release|x64.Build.0 = Release|Any CPU
 		{4CD32A63-494F-4769-A07D-802F1E9945A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{4CD32A63-494F-4769-A07D-802F1E9945A7}.Release|x86.Build.0 = Release|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Debug|x64.Build.0 = Debug|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Debug|x86.Build.0 = Debug|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Release|x64.ActiveCfg = Release|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Release|x64.Build.0 = Release|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Release|x86.ActiveCfg = Release|Any CPU
+		{707AC4D8-2D54-4666-97FB-A218C5AA404A}.Release|x86.Build.0 = Release|Any CPU
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Debug|Any CPU.Build.0 = Debug|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Debug|x64.ActiveCfg = Debug|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Debug|x64.Build.0 = Debug|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Debug|x86.ActiveCfg = Debug|Win32
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Debug|x86.Build.0 = Debug|Win32
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Release|Any CPU.ActiveCfg = Release|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Release|Any CPU.Build.0 = Release|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Release|x64.ActiveCfg = Release|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Release|x64.Build.0 = Release|x64
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Release|x86.ActiveCfg = Release|Win32
+		{FEAC7618-D4F5-402D-B498-AB7AD1A52324}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

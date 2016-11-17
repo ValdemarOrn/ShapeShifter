@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Vstsdk">
+      <UniqueIdentifier>{2e3ba95a-3ad5-46ac-9d6a-96767db01679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AudioLib">
+      <UniqueIdentifier>{9a6d7c26-f480-4759-8881-5954112bae8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NoiseGate">
+      <UniqueIdentifier>{813fdc58-564f-4a26-8b42-87ad7a419784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Osc">
+      <UniqueIdentifier>{52248dab-4fcc-4a5e-a307-21f4ed26b52e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\pluginterfaces\vst2.x\aeffect.h">
+      <Filter>Vstsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\pluginterfaces\vst2.x\aeffectx.h">
+      <Filter>Vstsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\pluginterfaces\vst2.x\vstfxstore.h">
+      <Filter>Vstsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\aeffeditor.h">
+      <Filter>Vstsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffect.h">
+      <Filter>Vstsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffectx.h">
+      <Filter>Vstsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Biquad.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\MathDefs.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\OnePoleFilters.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Utils.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\ValueTables.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Sse.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Transfer.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Butterworth.h">
+      <Filter>AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalEditor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGate\EnvelopeFollower.h">
+      <Filter>Source Files\NoiseGate</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGate\Expander.h">
+      <Filter>Source Files\NoiseGate</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGate\Indicators.h">
+      <Filter>Source Files\NoiseGate</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGate\PeakDetector.h">
+      <Filter>Source Files\NoiseGate</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGate\SlewLimiter.h">
+      <Filter>Source Files\NoiseGate</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGate\NoiseGateKernel.h">
+      <Filter>Source Files\NoiseGate</Filter>
+    </ClInclude>
+    <ClInclude Include="VstComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Osc\OscMessage.h">
+      <Filter>Source Files\Osc</Filter>
+    </ClInclude>
+    <ClInclude Include="Osc\UdpTranceiver.h">
+      <Filter>Source Files\Osc</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectKernel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffect.cpp">
+      <Filter>Vstsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffectx.cpp">
+      <Filter>Vstsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\vstplugmain.cpp">
+      <Filter>Vstsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLib\Biquad.cpp">
+      <Filter>AudioLib</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLib\Utils.cpp">
+      <Filter>AudioLib</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLib\ValueTables.cpp">
+      <Filter>AudioLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ExternalEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VstComponent..cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Osc\OscMessage.cpp">
+      <Filter>Source Files\Osc</Filter>
+    </ClCompile>
+    <ClCompile Include="Osc\UdpTranceiver.cpp">
+      <Filter>Source Files\Osc</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectKernel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

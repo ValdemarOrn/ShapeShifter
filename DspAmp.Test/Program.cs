@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AudioLib;
+using AudioLib.TF;
 using LowProfile.Visuals;
 
 namespace DspAmp.Test
@@ -18,8 +20,24 @@ namespace DspAmp.Test
 
             //p.TestUnipolarTanh();
             //p.TestUnipolarStage();
-            p.TestBoost();
+            //p.TestBoost();
+            p.TestFreqz();
             //p.TestStage();
+        }
+
+        private void TestFreqz()
+        {
+            var cc = Butterworth.ComputeCoefficients(48000, false, 1000, 4);
+            var res = Freqz.Compute(cc.Item1, cc.Item2, 2000);
+
+            var mags = res.ToDictionary(x => x.W, x => Utils.Gain2DB(x.Magnitude));
+            var angles = res.ToDictionary(x => x.W, x => x.Phase);
+
+            var pm = new OxyPlot.PlotModel();
+           // pm.AddLine(mags, x => x.Value, x => x.Key);
+            pm.AddLine(angles, x => x.Value, x => x.Key);
+            pm.Axes.Add(new OxyPlot.Axes.LogarithmicAxis() { Position = OxyPlot.Axes.AxisPosition.Bottom });
+            pm.Show();
         }
 
         private void TestBoost()
