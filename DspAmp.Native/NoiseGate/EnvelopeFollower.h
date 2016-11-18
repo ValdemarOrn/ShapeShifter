@@ -1,9 +1,9 @@
 #pragma once
 
-#include "AudioLib/Utils.h"
-#include "AudioLib/Biquad.h"
+#include "../AudioLib/Utils.h"
+#include "../AudioLib/Biquad.h"
 #include "Indicators.h"
-#include "AudioLib/OnePoleFilters.h"
+#include "../AudioLib/OnePoleFilters.h"
 
 namespace NoiseInvader
 {

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "AudioLib/Sse.h"
+#include "../AudioLib/Sse.h"
 #include "Expander.h"
 #include "EnvelopeFollower.h"
 #include "SlewLimiter.h"

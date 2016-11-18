@@ -18,8 +18,9 @@ AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 // ------------------------------------------------------------------------------------
 
 VstComponent::VstComponent(audioMasterCallback audioMaster)
-	: AudioEffectX (audioMaster, 1, (int)Parameters::Count)
+	: AudioEffectX (audioMaster, 1, Parameters::GetParameterCount())
 {
+	instance = 0;
 	setNumInputs(2); // 1x stereo in
 	setNumOutputs(2); // 1x stereo out
 	setUniqueID(91572787); // Random ID
@@ -33,13 +34,7 @@ VstComponent::VstComponent(audioMasterCallback audioMaster)
 	//this->setEditor(ed);
 
 	sampleRate = 48000;
-
-	parameters[(int)Parameters::Param0] = 0.0;
-	parameters[(int)Parameters::Param1] = 0.0;
-	
 	createDevice();
-
-	
 }
 
 VstComponent::~VstComponent()
@@ -90,63 +85,27 @@ void VstComponent::getProgramName(char* name)
 
 void VstComponent::setParameter(VstInt32 index, float value)
 {
-	parameters[index] = value;
-	bool update = true;
-
-	switch ((Parameters)index)
-	{
-	case Parameters::Param0:
-		;
-		break;
-	case Parameters::Param1:
-		;
-		break;
-	default:
-		update = false;
-	}
-
-	if (update)
-	{
-
-	}
+	instance->SetParameter(index, value);
 }
 
 float VstComponent::getParameter(VstInt32 index)
 {
-	return parameters[index];
+	return instance->GetParameterState(index).Value;
 }
 
 void VstComponent::getParameterName(VstInt32 index, char* label)
 {
-	switch ((Parameters)index)
-	{
-	case Parameters::Param0:
-	case Parameters::Param1:
-		strcpy(label, "Parameter");
-		break;
-	}
+	strcpy(label, instance->GetParameterState(index).Name.c_str());
 }
 
 void VstComponent::getParameterDisplay(VstInt32 index, char* text)
 {
-	switch ((Parameters)index)
-	{
-	case Parameters::Param0:
-	case Parameters::Param1:
-		sprintf(text, "%.2f", parameters[index]);
-		break;
-	}
+	strcpy(text, instance->GetParameterState(index).Display.c_str());
 }
 
 void VstComponent::getParameterLabel(VstInt32 index, char* label)
 {
-	switch ((Parameters)index)
-	{
-	case Parameters::Param0:
-	case Parameters::Param1:
-		strcpy(label, "");
-		break;
-	}
+	strcpy(label, "");
 }
 
 bool VstComponent::getEffectName(char* name)
@@ -186,13 +145,20 @@ void VstComponent::setSampleRate(float sampleRate)
 
 void VstComponent::createDevice()
 {
-	delete instance;
+	std::vector<float> values;
+
+	if (instance != 0)
+	{
+		for (size_t i = 0; i < numParams; i++)
+			values.push_back(getParameter(i));
+
+		delete instance;
+	}
+
 	instance = new EffectKernel(sampleRate, 64);
 
 	// re-apply parameters
-	for (size_t i = 0; i < (int)Parameters::Count; i++)
-	{
-		setParameter(i, parameters[i]);
-	}
+	for (size_t i = 0; i < values.size(); i++)
+		setParameter(i, values[i]);
 }
 

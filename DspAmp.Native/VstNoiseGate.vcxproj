@@ -167,6 +167,8 @@
     <ClInclude Include="EffectKernel.h" />
     <ClInclude Include="Osc\OscMessage.h" />
     <ClInclude Include="Osc\UdpTranceiver.h" />
+    <ClInclude Include="Parameters.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="VstComponent.h" />
     <ClInclude Include="ExternalEditor.h" />
     <ClInclude Include="NoiseGate\EnvelopeFollower.h" />
@@ -187,6 +189,7 @@
     <ClCompile Include="ExternalEditor.cpp" />
     <ClCompile Include="Osc\OscMessage.cpp" />
     <ClCompile Include="Osc\UdpTranceiver.cpp" />
+    <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="VstComponent..cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

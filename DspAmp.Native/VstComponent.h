@@ -8,7 +8,6 @@ using namespace DspAmp;
 class VstComponent : public AudioEffectX
 {
 protected:
-	float parameters[(int)Parameters::Count];
 	char programName[kVstMaxProgNameLen + 1];
 	EffectKernel* instance;
 	

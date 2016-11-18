@@ -12,14 +12,14 @@
     <Filter Include="Vstsdk">
       <UniqueIdentifier>{2e3ba95a-3ad5-46ac-9d6a-96767db01679}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AudioLib">
-      <UniqueIdentifier>{9a6d7c26-f480-4759-8881-5954112bae8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\NoiseGate">
       <UniqueIdentifier>{813fdc58-564f-4a26-8b42-87ad7a419784}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Osc">
       <UniqueIdentifier>{52248dab-4fcc-4a5e-a307-21f4ed26b52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AudioLib">
+      <UniqueIdentifier>{9a6d7c26-f480-4759-8881-5954112bae8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -42,28 +42,28 @@
       <Filter>Vstsdk</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\Biquad.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\MathDefs.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\OnePoleFilters.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\Utils.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\ValueTables.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\Sse.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\Transfer.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\Butterworth.h">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="ExternalEditor.h">
       <Filter>Source Files</Filter>
@@ -98,6 +98,12 @@
     <ClInclude Include="EffectKernel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Parameters.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffect.cpp">
@@ -110,13 +116,13 @@
       <Filter>Vstsdk</Filter>
     </ClCompile>
     <ClCompile Include="AudioLib\Biquad.cpp">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClCompile>
     <ClCompile Include="AudioLib\Utils.cpp">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClCompile>
     <ClCompile Include="AudioLib\ValueTables.cpp">
-      <Filter>AudioLib</Filter>
+      <Filter>Source Files\AudioLib</Filter>
     </ClCompile>
     <ClCompile Include="ExternalEditor.cpp">
       <Filter>Source Files</Filter>
@@ -131,6 +137,9 @@
       <Filter>Source Files\Osc</Filter>
     </ClCompile>
     <ClCompile Include="EffectKernel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
