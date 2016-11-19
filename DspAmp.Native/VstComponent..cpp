@@ -85,7 +85,7 @@ void VstComponent::getProgramName(char* name)
 
 void VstComponent::setParameter(VstInt32 index, float value)
 {
-	instance->SetParameter(index, value);
+	instance->SetParameter(index, value, false);
 }
 
 float VstComponent::getParameter(VstInt32 index)
@@ -156,7 +156,24 @@ void VstComponent::createDevice()
 	}
 
 	instance = new EffectKernel(sampleRate, 64);
+	instance->ParameterUpdateCallback = [&](Parameter para, float val)
+	{
+		// this maps the PArameter back to the vst param index and sends update to host (From gui, usually)
+		auto key = para.GetKey();
+		int vstParam = -1;
+		for (auto kvp : instance->IndexToParameter)
+		{
+			if (kvp.second.GetKey() == key)
+			{
+				vstParam = kvp.first;
+				break;
+			}
+		}
 
+		if (vstParam != -1)
+			this->setParameterAutomated(vstParam, val);
+
+	};
 	// re-apply parameters
 	for (size_t i = 0; i < values.size(); i++)
 		setParameter(i, values[i]);

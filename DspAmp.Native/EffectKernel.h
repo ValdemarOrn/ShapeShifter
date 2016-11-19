@@ -26,10 +26,12 @@ namespace DspAmp
 		bool isClosing;
 
 		int ParameterCount;
-		std::map<int, Parameter> IndexToParameter;
 		std::map<int, ParameterState> ParameterStates;
 	public:
 		
+		std::map<int, Parameter> IndexToParameter;
+		std::function<void(Parameter, float)> ParameterUpdateCallback;
+
 		EffectKernel(double fs, int bufferSize);
 		~EffectKernel();
 
@@ -37,8 +39,8 @@ namespace DspAmp
 
 		ParameterState GetParameterState(Parameter parameter);
 		ParameterState GetParameterState(int index);
-		void SetParameter(Parameter parameter, float value);
-		void SetParameter(int index, float value);
+		void SetParameter(Parameter parameter, float value, bool triggerCallback);
+		void SetParameter(int index, float value, bool triggerCallback);
 	private:
 		void MessageListener();
 		void SetupParameters();

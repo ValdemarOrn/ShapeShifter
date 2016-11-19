@@ -43,15 +43,18 @@ namespace DspAmp
 		return GetParameterState(IndexToParameter[index]);
 	}
 
-	void EffectKernel::SetParameter(Parameter parameter, float value)
+	void EffectKernel::SetParameter(Parameter parameter, float value, bool triggerCallback)
 	{
 		ParameterStates[parameter.GetKey()].Value  = value;
 		ParameterStates[parameter.GetKey()].Display = Utility::SPrint("%.2f", value);
+
+		if (triggerCallback && ParameterUpdateCallback)
+			ParameterUpdateCallback(parameter, value);
 	}
 
-	void EffectKernel::SetParameter(int index, float value)
+	void EffectKernel::SetParameter(int index, float value, bool triggerCallback)
 	{
-		SetParameter(IndexToParameter[index], value);
+		SetParameter(IndexToParameter[index], value, triggerCallback);
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -77,7 +80,7 @@ namespace DspAmp
 
 						float value = oscMsg.GetFloat(0);
 						auto param = Parameters::ParseOsc(oscMsg.Address);
-						SetParameter(param, value);
+						SetParameter(param, value, true);
 					}
 					catch (std::exception ex)
 					{
@@ -120,7 +123,7 @@ namespace DspAmp
 				ParameterStates[key].Index = index;
 				ParameterStates[key].Name = Parameters::ModuleNames[module] + " " + std::to_string(i);
 				IndexToParameter[index] = key;
-				SetParameter(p, 0.0);
+				SetParameter(p, 0.0, true);
 				index++;
 			}
 		}
