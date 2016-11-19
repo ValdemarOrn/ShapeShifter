@@ -23,6 +23,7 @@ namespace DspAmp.Ui
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
 
         private void ExitHandler(object sender, MouseButtonEventArgs e)
