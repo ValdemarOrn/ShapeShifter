@@ -160,10 +160,13 @@
     <ClInclude Include="AudioLib\Butterworth.h" />
     <ClInclude Include="AudioLib\MathDefs.h" />
     <ClInclude Include="AudioLib\OnePoleFilters.h" />
+    <ClInclude Include="AudioLib\SplineInterpolator.h" />
     <ClInclude Include="AudioLib\Sse.h" />
+    <ClInclude Include="AudioLib\TfUtil.h" />
     <ClInclude Include="AudioLib\Transfer.h" />
     <ClInclude Include="AudioLib\Utils.h" />
     <ClInclude Include="AudioLib\ValueTables.h" />
+    <ClInclude Include="Boost\Boost.h" />
     <ClInclude Include="EffectKernel.h" />
     <ClInclude Include="Osc\OscMessage.h" />
     <ClInclude Include="Osc\UdpTranceiver.h" />
@@ -183,6 +186,7 @@
     <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffectx.cpp" />
     <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\vstplugmain.cpp" />
     <ClCompile Include="AudioLib\Biquad.cpp" />
+    <ClCompile Include="AudioLib\SplineInterpolator.cpp" />
     <ClCompile Include="AudioLib\Utils.cpp" />
     <ClCompile Include="AudioLib\ValueTables.cpp" />
     <ClCompile Include="EffectKernel.cpp" />

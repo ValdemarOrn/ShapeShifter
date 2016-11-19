@@ -21,6 +21,9 @@
     <Filter Include="Source Files\AudioLib">
       <UniqueIdentifier>{9a6d7c26-f480-4759-8881-5954112bae8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Boost">
+      <UniqueIdentifier>{f12ca6c0-1db0-4ff4-a972-2dd193c04469}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\pluginterfaces\vst2.x\aeffect.h">
@@ -104,6 +107,15 @@
     <ClInclude Include="Utility.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Boost\Boost.h">
+      <Filter>Source Files\Boost</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\TfUtil.h">
+      <Filter>Source Files\AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\SplineInterpolator.h">
+      <Filter>Source Files\AudioLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffect.cpp">
@@ -141,6 +153,9 @@
     </ClCompile>
     <ClCompile Include="Parameters.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLib\SplineInterpolator.cpp">
+      <Filter>Source Files\AudioLib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
