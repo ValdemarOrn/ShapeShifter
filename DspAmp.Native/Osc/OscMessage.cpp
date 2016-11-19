@@ -1,6 +1,6 @@
 #include "OscMessage.h"
 
-namespace Polyhedrus
+namespace Osc
 {
 	inline int ReadInt(uint8_t* dataPtr)
 	{

@@ -11,17 +11,15 @@ namespace DspAmp.Ui
     {
         private readonly EffectModule module;
         private readonly int parameterIndex;
-        private readonly Func<double, string> formatter;
         private double value;
+        private string displayValue;
 
         public DisplayKnobState(
             EffectModule module,
-            int parameterIndex,
-            Func<double, string> formatter)
+            int parameterIndex)
         {
             this.module = module;
             this.parameterIndex = parameterIndex;
-            this.formatter = formatter;
         }
 
         public EffectModule Module => module;
@@ -37,11 +35,18 @@ namespace DspAmp.Ui
             {
                 this.value = value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged(nameof(DisplayValue));
             }
         }
 
-        public string DisplayValue => formatter(value);
+        public string DisplayValue
+        {
+            get { return displayValue; }
+            set
+            {
+                displayValue = value;
+                NotifyPropertyChanged();
+            }
+        }
     }
 
 }

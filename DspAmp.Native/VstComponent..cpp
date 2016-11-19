@@ -85,7 +85,7 @@ void VstComponent::getProgramName(char* name)
 
 void VstComponent::setParameter(VstInt32 index, float value)
 {
-	instance->SetParameter(index, value, false);
+	instance->SetParameter(index, value, false, true);
 }
 
 float VstComponent::getParameter(VstInt32 index)

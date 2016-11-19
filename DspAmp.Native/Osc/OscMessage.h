@@ -8,7 +8,7 @@
 using std::vector;
 using std::string;
 
-namespace Polyhedrus
+namespace Osc
 {
 	class OscMessage
 	{

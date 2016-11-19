@@ -43,8 +43,8 @@ namespace DspAmp
 
 		ParameterState GetParameterState(Parameter parameter);
 		ParameterState GetParameterState(int index);
-		void SetParameter(Parameter parameter, float value, bool triggerCallback);
-		void SetParameter(int index, float value, bool triggerCallback);
+		void SetParameter(Parameter parameter, float value, bool updateHost, bool updateGui);
+		void SetParameter(int index, float value, bool updateHost, bool updateGui);
 
 	private:
 		bool ApplyNoiseGateParameter(int parameter_index, float value);

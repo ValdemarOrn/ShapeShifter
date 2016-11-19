@@ -64,10 +64,10 @@ namespace DspAmp
 		return GetParameterState(IndexToParameter[index]);
 	}
 
-	void EffectKernel::SetParameter(Parameter parameter, float value, bool triggerCallback)
+	void EffectKernel::SetParameter(Parameter parameter, float value, bool updateHost, bool updateGui)
 	{
-		ParameterStates[parameter.GetKey()].Value  = value;
-		ParameterStates[parameter.GetKey()].Display = Utility::SPrint("%.2f", value);
+		auto key = parameter.GetKey();
+		ParameterStates[key].Value  = value;
 		bool updated = false;
 
 		if (parameter.Module == EffectModule::NoiseGate)
@@ -75,14 +75,31 @@ namespace DspAmp
 			updated = ApplyNoiseGateParameter(parameter.ParameterIndex, value);
 		}
 
+		if (!updated)
+			return;
 
-		if (updated && triggerCallback && ParameterUpdateCallback)
+		if (updateHost && ParameterUpdateCallback)
+		{
 			ParameterUpdateCallback(parameter, value);
+		}
+
+		if (updateGui)
+		{
+			std::string address = "/";
+			address += Parameters::ModuleNames[parameter.Module];
+			address += "/";
+			address += std::to_string(parameter.ParameterIndex);
+
+			Osc::OscMessage msg(address);
+			msg.SetFloat(ParameterStates[key].Value);
+			msg.SetString(ParameterStates[key].Display);
+			udpTranceiver->Send(msg.GetBytes());
+		}
 	}
 
-	void EffectKernel::SetParameter(int index, float value, bool triggerCallback)
+	void EffectKernel::SetParameter(int index, float value, bool updateHost, bool updateGui)
 	{
-		SetParameter(IndexToParameter[index], value, triggerCallback);
+		SetParameter(IndexToParameter[index], value, updateHost, updateGui);
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -90,24 +107,33 @@ namespace DspAmp
 
 	bool EffectKernel::ApplyNoiseGateParameter(int index, float value)
 	{
+		auto key = Parameter(EffectModule::NoiseGate, index).GetKey();
 		auto p = static_cast<ParametersNoiseGate>(index);
+		double tempVal = 0.0;
 		bool update = true;
+
 		switch (p)
 		{
 		case ParametersNoiseGate::DetectorGain:
-			noiseGate.DetectorGain = Utils::DB2gain(40 * value - 20);
+			tempVal = 40 * value - 20;
+			noiseGate.DetectorGain = Utils::DB2gain(tempVal);
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", tempVal);
 			break;
 		case ParametersNoiseGate::ReductionDb:
 			noiseGate.ReductionDb = -value * 100;
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", noiseGate.ReductionDb);
 			break;
 		case ParametersNoiseGate::ReleaseMs:
 			noiseGate.ReleaseMs = 10 + ValueTables::Get(value, ValueTables::Response2Dec) * 990;
+			ParameterStates[key].Display = Utility::SPrint("%.0f ms", noiseGate.ReleaseMs);
 			break;
 		case ParametersNoiseGate::Slope:
-			noiseGate.Slope = 1.0f + ValueTables::Get(value, ValueTables::Response2Dec) * 50;
+			noiseGate.Slope = 1.0f + ValueTables::Get(value, ValueTables::Response2Dec) * 49;
+			ParameterStates[key].Display = Utility::SPrint("%.2f", noiseGate.Slope);
 			break;
 		case ParametersNoiseGate::ThresholdDb:
 			noiseGate.ThresholdDb = -ValueTables::Get(1 - value, ValueTables::Response2Oct) * 80;
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", noiseGate.ThresholdDb);
 			break;
 		default:
 			update = false;
@@ -138,19 +164,19 @@ namespace DspAmp
 
 					try
 					{
-						auto oscMsgs = Polyhedrus::OscMessage::ParseRawBytes(data);
+						auto oscMsgs = Osc::OscMessage::ParseRawBytes(data);
 						auto oscMsg = oscMsgs.at(0);
 
 						float value = oscMsg.GetFloat(0);
 						auto param = Parameters::ParseOsc(oscMsg.Address);
-						SetParameter(param, value, true);
+						SetParameter(param, value, true, true);
 					}
 					catch (std::exception ex)
 					{
 						try
 						{
 							std::cout << ex.what() << std::endl;
-							Polyhedrus::OscMessage oscMsg("/Control/ErrorMessage");
+							Osc::OscMessage oscMsg("/Control/ErrorMessage");
 							oscMsg.SetString(std::string("An Error occurred while processing an OSC message:\n") + ex.what());
 							udpTranceiver->Send(oscMsg.GetBytes());
 						}
@@ -186,7 +212,7 @@ namespace DspAmp
 				ParameterStates[key].Index = index;
 				ParameterStates[key].Name = Parameters::ModuleNames[module] + " " + std::to_string(i);
 				IndexToParameter[index] = key;
-				SetParameter(p, 0.0, true);
+				SetParameter(p, 0.0, true, true);
 				index++;
 			}
 		}

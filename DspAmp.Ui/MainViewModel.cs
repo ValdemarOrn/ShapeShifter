@@ -16,14 +16,16 @@ namespace DspAmp.Ui
     {
         private string programName;
         private DisplayKnobState[] knobState;
-        private Dictionary<int, double> parameterValues;
+        private Dictionary<int, double> allParameterValues;
+        private Dictionary<int, string> allParameterDisplays;
         private OscTranceiver tranceiver;
         private readonly ConcurrentDictionary<string, OscMessage> sendMessages;
 
         public MainViewModel()
         {
             ProgramName = "Program 1";
-            parameterValues = new Dictionary<int, double>();
+            allParameterValues = new Dictionary<int, double>();
+            allParameterDisplays = new Dictionary<int, string>();
             tranceiver = new OscTranceiver(1800, 1801);
             sendMessages = new ConcurrentDictionary<string, OscMessage>();
             var oscThread = new Thread(ProcessOscMessages) { IsBackground = true };
@@ -110,15 +112,33 @@ namespace DspAmp.Ui
 
         private void ProcessOscMessage(byte[] bytes)
         {
-            try
+            var msg = OscPacket.GetPacket(bytes) as OscMessage;
+            Console.WriteLine(msg.ToString());
+
+            var parts = msg.Address.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var module = (EffectModule)Enum.Parse(typeof(EffectModule), parts[0]);
+            var index = Convert.ToInt32(parts[1]);
+            UpdateParameterFeedback(module, index, (float)msg.Arguments[0], (string)msg.Arguments[1]);
+
+        }
+
+        private void UpdateParameterFeedback(EffectModule module, int parameterIndex, float value, string display)
+        {
+            var idx = (((int)module) << 8) | parameterIndex;
+            allParameterValues[idx] = value;
+            allParameterDisplays[idx] = display;
+
+            foreach (var kvp in KnobState)
             {
-                var msg = OscPacket.GetPacket(bytes) as OscMessage;
-                Console.WriteLine(msg.ToString());
-                // todo:
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.GetTrace());
+                if (kvp.Module == module && kvp.ParameterIndex == parameterIndex)
+                {
+                    // only update is received value is different from current value.
+                    // otherwise this causes an infinite feedback loop
+                    if (Math.Abs(kvp.Value - value) > 0.0001)
+                        kvp.Value = value;
+
+                    kvp.DisplayValue = display;
+                }
             }
         }
 
@@ -137,7 +157,7 @@ namespace DspAmp.Ui
                 if (controls.Length > i)
                 {
                     var c = controls[i];
-                    newStates[i] = new DisplayKnobState(c.Module, c.ParameterIndex, c.Formatter)
+                    newStates[i] = new DisplayKnobState(c.Module, c.ParameterIndex)
                     {
                         IsVisible = true,
                         Name = c.Name,
@@ -148,7 +168,7 @@ namespace DspAmp.Ui
                 }
                 else
                 {
-                    newStates[i] = new DisplayKnobState(0, 0, ControlMap.DefaultFormatter)
+                    newStates[i] = new DisplayKnobState(0, 0)
                     {
                         IsVisible = false,
                         Name = "Not in use",
@@ -173,8 +193,8 @@ namespace DspAmp.Ui
         private double? GetValue(EffectModule module, int parameterIndex)
         {
             var idx = (((int)module) << 8) | parameterIndex;
-            if (parameterValues.ContainsKey(idx))
-                return parameterValues[idx];
+            if (allParameterValues.ContainsKey(idx))
+                return allParameterValues[idx];
 
             return null;
         }
@@ -184,7 +204,7 @@ namespace DspAmp.Ui
             bool updateGui)
         {
             var idx = (((int)module) << 8) | parameterIndex;
-            parameterValues[idx] = val;
+            allParameterValues[idx] = val;
 
             if (sendOscUpdate)
             {
