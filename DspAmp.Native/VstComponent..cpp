@@ -134,7 +134,6 @@ VstInt32 VstComponent::getVendorVersion()
 void VstComponent::processReplacing(float** inputs, float** outputs, VstInt32 sampleFrames)
 {
 	instance->Process(inputs, outputs, sampleFrames);
-	//setParameterAutomated((int)Parameters::CurrentGain, kernel->currentGainDb / 150 + 1);
 }
 
 void VstComponent::setSampleRate(float sampleRate)

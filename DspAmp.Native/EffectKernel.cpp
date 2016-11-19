@@ -2,10 +2,12 @@
 #include "Osc/OscMessage.h"
 #include <iostream>
 #include "Parameters.h"
+#include "AudioLib/ValueTables.h"
 
 namespace DspAmp
 {
 	EffectKernel::EffectKernel(double fs, int bufferSize)
+		: noiseGate(fs)
 	{
 		this->fs = fs;
 		this->bufferSize = bufferSize;
@@ -24,12 +26,31 @@ namespace DspAmp
 		udpTranceiver = 0;
 	}
 
-	void EffectKernel::Process(float** inputs, float** outputs, int bufferSize)
+	void EffectKernel::Process(float** inputs, float** outputs, int totalBufferSize)
 	{
-		for (int i = 0; i < bufferSize; i++)
+		for (int i = 0; i < totalBufferSize; i += bufferSize)
 		{
-			outputs[0][i] = inputs[0][i];
-			outputs[1][i] = inputs[1][i];
+			auto size = i + bufferSize > totalBufferSize ? totalBufferSize - i : bufferSize;
+
+			float* outL = &outputs[0][i];
+			float* outR = &outputs[1][i];
+			float* inL = &inputs[0][i];
+			float* inR = &inputs[1][i];
+			ProcessBuffer(inL, inR, outL, outR, size);
+		}
+	}
+
+	void EffectKernel::ProcessBuffer(float* inL, float* inR, float* outL, float* outR, int count)
+	{
+		noiseGate.Process(inL, inR, inL, outL, outR, count);
+
+		for (int i = 0; i < count; i++)
+		{
+			outL[i] = AudioLib::Utils::Limit(outL[i] * 20, -1, 1);
+			outR[i] = AudioLib::Utils::Limit(outR[i] * 20, -1, 1);
+
+			//outL[i] = inL[i];
+			//outR[i] = inR[i];
 		}
 	}
 
@@ -47,8 +68,15 @@ namespace DspAmp
 	{
 		ParameterStates[parameter.GetKey()].Value  = value;
 		ParameterStates[parameter.GetKey()].Display = Utility::SPrint("%.2f", value);
+		bool updated = false;
 
-		if (triggerCallback && ParameterUpdateCallback)
+		if (parameter.Module == EffectModule::NoiseGate)
+		{
+			updated = ApplyNoiseGateParameter(parameter.ParameterIndex, value);
+		}
+
+
+		if (updated && triggerCallback && ParameterUpdateCallback)
 			ParameterUpdateCallback(parameter, value);
 	}
 
@@ -56,6 +84,41 @@ namespace DspAmp
 	{
 		SetParameter(IndexToParameter[index], value, triggerCallback);
 	}
+
+	// ------------------------------------------------------------------------------------
+
+
+	bool EffectKernel::ApplyNoiseGateParameter(int index, float value)
+	{
+		auto p = static_cast<ParametersNoiseGate>(index);
+		bool update = true;
+		switch (p)
+		{
+		case ParametersNoiseGate::DetectorGain:
+			noiseGate.DetectorGain = Utils::DB2gain(40 * value - 20);
+			break;
+		case ParametersNoiseGate::ReductionDb:
+			noiseGate.ReductionDb = -value * 100;
+			break;
+		case ParametersNoiseGate::ReleaseMs:
+			noiseGate.ReleaseMs = 10 + ValueTables::Get(value, ValueTables::Response2Dec) * 990;
+			break;
+		case ParametersNoiseGate::Slope:
+			noiseGate.Slope = 1.0f + ValueTables::Get(value, ValueTables::Response2Dec) * 50;
+			break;
+		case ParametersNoiseGate::ThresholdDb:
+			noiseGate.ThresholdDb = -ValueTables::Get(1 - value, ValueTables::Response2Oct) * 80;
+			break;
+		default:
+			update = false;
+		}
+
+		if (update)
+			noiseGate.UpdateAll();
+
+		return update;
+	}
+
 
 	// ------------------------------------------------------------------------------------
 

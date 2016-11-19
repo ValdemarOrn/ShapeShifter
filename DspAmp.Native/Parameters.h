@@ -19,6 +19,22 @@ enum class EffectModule
 	Global
 };
 
+enum class ParametersNoiseGate
+{
+	// Gain Settings
+	DetectorGain = 0,
+
+	// Noise Gate Settings
+	ReductionDb,
+	ThresholdDb,
+	Slope,
+	ReleaseMs,
+
+	//CurrentGain,
+
+	Count
+};
+
 class Parameter
 {
 public:
