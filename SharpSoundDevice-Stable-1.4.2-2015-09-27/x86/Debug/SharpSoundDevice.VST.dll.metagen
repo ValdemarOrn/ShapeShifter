@@ -1,0 +1,44 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly SharpSoundDevice.VST, Version=1.4.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly SharpSoundDevice, Version=1.4.*, Culture=Invariant Language (Invariant Country): 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class SharpSoundDevice.VST.AssemblyLoader: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    AddAssemblyResolver(String): PrivateScope, Public, Static, HideBySig
+Class SharpSoundDevice.VST.HostInfoClass: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.MarshalByRefObject
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    SharpSoundDevice.IHostInfo
+    System.IDisposable
+  Fields:
+    VstPluginBridge* vstHost : Public
+    AudioDevice* Device : Public
+  Properties:
+    UInt32 HostVersion 'get ' : 
+    System.String HostName 'get ' : 
+    System.String HostVendor 'get ' : 
+    Int32 TimeSignatureDen 'get ' : 
+    Int32 TimeSignatureNum 'get ' : 
+    Int32 BlockSize 'get ' : 
+    Double SampleRate 'get ' : 
+    Double SamplePosition 'get ' : 
+    Double BPM 'get ' : 
+  Methods:
+    SendEvent(Int32, Event): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    get_BPM(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_SamplePosition(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_SampleRate(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_BlockSize(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_TimeSignatureNum(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_TimeSignatureDen(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_HostVendor(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_HostName(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_HostVersion(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig

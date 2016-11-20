@@ -32,3 +32,4 @@ _ReSharper*/
 packages*/
 [Tt]est[Rr]esult*
 Build/*
+!SharpSoundDevice-Stable-1.4.2-2015-09-27/*/*/
