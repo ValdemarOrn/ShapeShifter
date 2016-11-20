@@ -35,6 +35,17 @@ enum class ParametersNoiseGate
 	Count
 };
 
+enum class ParametersBoost
+{
+	Drive = 0,
+	Tone,
+	Mix,
+	Tightness,
+	Clipper,
+
+	Count
+};
+
 class Parameter
 {
 public:

@@ -146,7 +146,7 @@ namespace DspAmp
 
             buffer = buffer * mix + input;
             var output = lpTone.Process1(hpFilterOut.Process1(buffer));
-            return buffer;
+            return output;
         }
     }
 }

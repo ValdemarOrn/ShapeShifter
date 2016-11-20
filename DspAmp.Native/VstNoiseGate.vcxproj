@@ -156,8 +156,10 @@
     <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\aeffeditor.h" />
     <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffect.h" />
     <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\public.sdk\source\vst2.x\audioeffectx.h" />
+    <ClInclude Include="AudioLib\Bilinear.h" />
     <ClInclude Include="AudioLib\Biquad.h" />
     <ClInclude Include="AudioLib\Butterworth.h" />
+    <ClInclude Include="AudioLib\Conv.h" />
     <ClInclude Include="AudioLib\MathDefs.h" />
     <ClInclude Include="AudioLib\OnePoleFilters.h" />
     <ClInclude Include="AudioLib\SplineInterpolator.h" />
@@ -166,7 +168,7 @@
     <ClInclude Include="AudioLib\Transfer.h" />
     <ClInclude Include="AudioLib\Utils.h" />
     <ClInclude Include="AudioLib\ValueTables.h" />
-    <ClInclude Include="Boost\Boost.h" />
+    <ClInclude Include="Boost\BoostKernel.h" />
     <ClInclude Include="EffectKernel.h" />
     <ClInclude Include="Osc\OscMessage.h" />
     <ClInclude Include="Osc\UdpTranceiver.h" />

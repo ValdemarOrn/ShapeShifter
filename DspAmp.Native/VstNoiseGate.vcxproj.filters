@@ -107,14 +107,20 @@
     <ClInclude Include="Utility.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Boost\Boost.h">
-      <Filter>Source Files\Boost</Filter>
-    </ClInclude>
     <ClInclude Include="AudioLib\TfUtil.h">
       <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
     <ClInclude Include="AudioLib\SplineInterpolator.h">
       <Filter>Source Files\AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Conv.h">
+      <Filter>Source Files\AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Bilinear.h">
+      <Filter>Source Files\AudioLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Boost\BoostKernel.h">
+      <Filter>Source Files\Boost</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

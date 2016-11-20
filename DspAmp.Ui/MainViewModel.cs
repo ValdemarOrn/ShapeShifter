@@ -20,6 +20,7 @@ namespace DspAmp.Ui
         private Dictionary<int, string> allParameterDisplays;
         private OscTranceiver tranceiver;
         private readonly ConcurrentDictionary<string, OscMessage> sendMessages;
+        private volatile bool disableOscSend;
 
         public MainViewModel()
         {
@@ -135,7 +136,17 @@ namespace DspAmp.Ui
                     // only update is received value is different from current value.
                     // otherwise this causes an infinite feedback loop
                     if (Math.Abs(kvp.Value - value) > 0.0001)
-                        kvp.Value = value;
+                    {
+                        try
+                        {
+                            disableOscSend = true;
+                            kvp.Value = value;
+                        }
+                        finally
+                        {
+                            disableOscSend = false;
+                        }
+                    }
 
                     kvp.DisplayValue = display;
                 }
@@ -161,7 +172,8 @@ namespace DspAmp.Ui
                     {
                         IsVisible = true,
                         Name = c.Name,
-                        Value = GetValue(c.Module, c.ParameterIndex) ?? 0.0
+                        Value = GetValue(c.Module, c.ParameterIndex) ?? 0.0,
+                        DisplayValue  = GetDisplay(c.Module, c.ParameterIndex) ?? ""
                     };
 
                     newStates[i].PropertyChanged += KnobUpdateHandler;
@@ -199,6 +211,15 @@ namespace DspAmp.Ui
             return null;
         }
 
+        private string GetDisplay(EffectModule module, int parameterIndex)
+        {
+            var idx = (((int)module) << 8) | parameterIndex;
+            if (allParameterDisplays.ContainsKey(idx))
+                return allParameterDisplays[idx];
+
+            return null;
+        }
+
         private void SetValue(EffectModule module, int parameterIndex, double val,
             bool sendOscUpdate,
             bool updateGui)
@@ -206,7 +227,7 @@ namespace DspAmp.Ui
             var idx = (((int)module) << 8) | parameterIndex;
             allParameterValues[idx] = val;
 
-            if (sendOscUpdate)
+            if (sendOscUpdate && !disableOscSend)
             {
                 var address = $"/{module}/{parameterIndex}";
                 sendMessages[address] = new OscMessage(address, (float)val);

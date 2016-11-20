@@ -5,6 +5,7 @@
 #include <thread>
 #include "Parameters.h"
 #include "NoiseGate/NoiseGateKernel.h"
+#include "Boost/BoostKernel.h"
 
 namespace DspAmp
 {
@@ -30,6 +31,7 @@ namespace DspAmp
 		std::map<int, ParameterState> ParameterStates;
 
 		NoiseInvader::NoiseGateKernel noiseGate;
+		Boost::BoostKernel boost;
 	public:
 		
 		std::map<int, Parameter> IndexToParameter;
@@ -48,7 +50,8 @@ namespace DspAmp
 
 	private:
 		bool ApplyNoiseGateParameter(int parameter_index, float value);
-
+		bool ApplyBoostParameter(int parameter_index, float value);
+		
 		void MessageListener();
 		void SetupParameters();
 	};

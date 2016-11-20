@@ -8,6 +8,7 @@ namespace DspAmp
 {
 	EffectKernel::EffectKernel(double fs, int bufferSize)
 		: noiseGate(fs)
+		, boost(fs, bufferSize)
 	{
 		this->fs = fs;
 		this->bufferSize = bufferSize;
@@ -74,6 +75,10 @@ namespace DspAmp
 		{
 			updated = ApplyNoiseGateParameter(parameter.ParameterIndex, value);
 		}
+		else if (parameter.Module == EffectModule::Boost)
+		{
+			updated = ApplyBoostParameter(parameter.ParameterIndex, value);
+		}
 
 		if (!updated)
 			return;
@@ -135,6 +140,46 @@ namespace DspAmp
 			noiseGate.ThresholdDb = -ValueTables::Get(1 - value, ValueTables::Response2Oct) * 80;
 			ParameterStates[key].Display = Utility::SPrint("%.1f dB", noiseGate.ThresholdDb);
 			break;
+		default:
+			update = false;
+		}
+
+		if (update)
+			noiseGate.UpdateAll();
+
+		return update;
+	}
+
+	bool EffectKernel::ApplyBoostParameter(int index, float value)
+	{
+		auto key = Parameter(EffectModule::Boost, index).GetKey();
+		auto p = static_cast<ParametersBoost>(index);
+		double tempVal = 0.0;
+		bool update = true;
+
+		switch (p)
+		{
+		case ParametersBoost::Drive:
+			boost.SetDrive(value);
+			ParameterStates[key].Display = Utility::SPrint("%.2f", value * 10);
+			break;
+		case ParametersBoost::Tone:
+			boost.SetTone(value);
+			ParameterStates[key].Display = Utility::SPrint("%.2f", value * 10);
+			break;
+		case ParametersBoost::Mix:
+			boost.Mix = value;
+			ParameterStates[key].Display = Utility::SPrint("%.0f %", value * 100);
+			break;
+		case ParametersBoost::Tightness:
+			boost.SetTightness(value);
+			ParameterStates[key].Display = Utility::SPrint("%.2f", value * 10);
+			break;
+		case ParametersBoost::Clipper:
+			boost.SetClipper((Boost::ClipperType)(int)(value * 3.999));
+			ParameterStates[key].Display = boost.GetClipperName();
+			break;
+		
 		default:
 			update = false;
 		}

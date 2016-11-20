@@ -3,6 +3,7 @@
 #include <string>
 #include "../AudioLib/TfUtil.h"
 #include "../AudioLib/SplineInterpolator.h"
+#include "../AudioLib/Butterworth.h"
 
 //using namespace AudioLib;
 
@@ -16,7 +17,7 @@ namespace Boost
 		Jfet
 	};
 
-	class Boost
+	class BoostKernel
 	{
 	private:
 		double fs;
@@ -37,7 +38,7 @@ namespace Boost
 		double Mix;
 
 	public:
-		Boost(double fs, int bufferSize)
+		BoostKernel(double fs, int bufferSize)
 			: hpFilterGain(1)
 			, hpFilterOut(1)
 			, lpTone(1)
@@ -47,15 +48,15 @@ namespace Boost
 			this->buffer = new double[bufferSize];
 			this->fs = fs;
 			SetClipper(ClipperType::Diode);
-			/*
-			var hpOut = Butterworth.ComputeCoefficients(fs, true, 70, 1);
-			hpFilterOut.Update(hpOut.Item1, hpOut.Item2);
-			*/
+			
+			auto hpOut = AudioLib::Butterworth::ComputeCoefficients(fs, true, 70, 1);
+			hpFilterOut.Update(std::get<0>(hpOut), std::get<1>(hpOut));
+			
 			SetTightness(0.4);
 			SetTone(1);
 		}
 
-		~Boost()
+		~BoostKernel()
 		{
 			delete buffer;
 		}
@@ -75,8 +76,8 @@ namespace Boost
 		{
 			this->toneFreq = 700 + AudioLib::ValueTables::Get(tone, AudioLib::ValueTables::Response2Dec) * 4300;
 			tone = value;
-			//var lp = Butterworth.ComputeCoefficients(fs, false, toneFreq, 1);
-			//lpTone.Update(lp.Item1, lp.Item2);
+			auto lp = AudioLib::Butterworth::ComputeCoefficients(fs, false, toneFreq, 1);
+			lpTone.Update(std::get<0>(lp), std::get<1>(lp));
 		}
 		
 
@@ -86,8 +87,8 @@ namespace Boost
 		{
 			auto freq = 200 + AudioLib::ValueTables::Get(tone, AudioLib::ValueTables::Response2Oct) * 1800;
 			tightness = value;
-			//var hpGain = Butterworth.ComputeCoefficients(fs, true, freq, 1);
-			//hpFilterGain.Update(hpGain.Item1, hpGain.Item2);
+			auto hpGain = AudioLib::Butterworth::ComputeCoefficients(fs, true, freq, 1);
+			hpFilterGain.Update(get<0>(hpGain), get<1>(hpGain));
 		}
 		
 
@@ -114,51 +115,59 @@ namespace Boost
 			}
 		}
 		
-
 		double GetToneFreq()
 		{
 			return toneFreq;
 		}
 
-		std::string GetClipperType()
+		std::string GetClipperName()
 		{
-			return "";
-			//return Clipper.ToString();
+			switch (clipper)
+			{
+			case ClipperType::Diode:
+				return "Diode";
+			case ClipperType::Jfet:
+				return "Jfet";
+			case ClipperType::Led:
+				return "Led";
+			case ClipperType::Zener:
+				return "Zener";
+			default:
+				return "";
+			}
 		}
 
 		void Process(double* input, double* output, int count)
 		{
 			if (count > bufferSize)
 			{
-				// die
+				throw std::exception();
 			}
 
-			/*for (int i = 0; i < count; i++)
+			for (int i = 0; i < count; i++)
 				buffer[i] = hpFilterGain.Process1(input[i]) * effectiveDrive;
 
-			spline.ProcessInPlace(buffer);
+			spline.ProcessInPlace(buffer, count);
 			double mix = Mix;
 
 			for (int i = 0; i < bufferSize; i++)
 				buffer[i] = buffer[i] * mix + input[i];
 
 			for (int i = 0; i < bufferSize; i++)
-				output[i] = lpTone.Process1(hpFilterOut.Process1(buffer[i])) * 0.3;*/
+				output[i] = lpTone.Process1(hpFilterOut.Process1(buffer[i])) * 0.3;
 		}
 
 		double Process(double input)
 		{
-			/*double buffer = 0.0;
+			double buffer = 0.0;
 
 			buffer = hpFilterGain.Process1(input) * effectiveDrive;
 			buffer = spline.Process(buffer);
 			double mix = Mix;
 
 			buffer = buffer * mix + input;
-			var output = lpTone.Process1(hpFilterOut.Process1(buffer));
-			return buffer;*/
-
-			return 0.0;
+			auto output = lpTone.Process1(hpFilterOut.Process1(buffer));
+			return output;
 		}
 	};
 }
