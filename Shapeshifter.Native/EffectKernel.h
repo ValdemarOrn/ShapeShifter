@@ -6,6 +6,7 @@
 #include "Parameters.h"
 #include "NoiseGate/NoiseGateKernel.h"
 #include "Boost/BoostKernel.h"
+#include "IoFilter/IoFilter.h"
 
 namespace Shapeshifter
 {
@@ -34,6 +35,7 @@ namespace Shapeshifter
 
 		NoiseInvader::NoiseGateKernel noiseGate;
 		Boost::BoostKernel boost;
+		IoFilter::IoFilterKernel inputFilter;
 	public:
 		
 		std::map<int, Parameter> IndexToParameter;

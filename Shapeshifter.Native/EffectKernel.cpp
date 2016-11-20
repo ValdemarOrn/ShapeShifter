@@ -9,6 +9,7 @@ namespace Shapeshifter
 	EffectKernel::EffectKernel(double fs, int bufferSize)
 		: noiseGate(fs)
 		, boost(fs, bufferSize)
+		, inputFilter(fs, bufferSize)
 	{
 		buffer1 = new float[bufferSize];
 		buffer2 = new float[bufferSize];

@@ -160,6 +160,7 @@
     <ClInclude Include="AudioLib\Biquad.h" />
     <ClInclude Include="AudioLib\Butterworth.h" />
     <ClInclude Include="AudioLib\Conv.h" />
+    <ClInclude Include="AudioLib\Freqz.h" />
     <ClInclude Include="AudioLib\MathDefs.h" />
     <ClInclude Include="AudioLib\OnePoleFilters.h" />
     <ClInclude Include="AudioLib\SplineInterpolator.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="AudioLib\ValueTables.h" />
     <ClInclude Include="Boost\BoostKernel.h" />
     <ClInclude Include="EffectKernel.h" />
+    <ClInclude Include="IoFilter\IoFilter.h" />
     <ClInclude Include="Osc\OscMessage.h" />
     <ClInclude Include="Osc\UdpTranceiver.h" />
     <ClInclude Include="Parameters.h" />

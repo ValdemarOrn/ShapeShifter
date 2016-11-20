@@ -22,8 +22,8 @@ namespace AudioLib
 
 	private:
 		int samplerate;
-		float _gainDb;
-		float _q;
+		float gainDB;
+		float q;
 		float a0, a1, a2, b0, b1, b2;
 		float x1, x2, y, y1, y2;
 		float gain;
@@ -50,6 +50,8 @@ namespace AudioLib
 		vector<float> GetB();
 
 		void Update();
+		void Update2();
+
 		float GetResponse(float freq) const;
 		
 		float inline Process(float x)

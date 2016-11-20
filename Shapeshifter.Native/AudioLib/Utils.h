@@ -4,6 +4,9 @@
 #include <cstring>
 #include <cmath>
 #include "MathDefs.h"
+#include <sstream>
+#include <vector>
+#include <iomanip>
 
 namespace AudioLib
 {
@@ -230,6 +233,64 @@ namespace AudioLib
 		static inline double ComputeLpAlpha(double fc, double ts)
 		{
 			return (2 * M_PI * ts * fc) / (2 * M_PI * ts * fc + 1);
+		}
+
+		template<typename T>
+		static std::string ToMatlabString(double fs, std::vector<T> b, std::vector<T> a)
+		{
+			std::stringstream bStream;
+			std::stringstream aStream;
+			bStream << std::setprecision(15);
+			aStream << std::setprecision(15);
+
+			for (size_t i = 0; i < b.size(); i++)
+			{
+				if (i != 0)
+					bStream << ", ";
+
+				bStream << b.at(i);
+			}
+
+			for (size_t i = 0; i < a.size(); i++)
+			{
+				if (i != 0)
+					aStream << ", ";
+
+				aStream << a.at(i);
+			}
+
+			std::string str;
+			str += "b = [" + bStream.str() + "];\r\n";
+			str += "a = [" + aStream.str() + "];\r\n";
+			str += "h = fvtool(b, a);\r\n";
+			str += "set(h, 'Fs', " + std::to_string(fs) + ");\r\n";
+			str += "set(h, 'FrequencyScale', 'log');\r\n";
+
+			return str;
+		}
+
+		template<typename T>
+		static std::string Float2String(T value, int precision)
+		{
+			std::stringstream str;
+			str << std::fixed << std::setprecision(precision) << value;
+			return str.str();
+		}
+
+		template<typename T>
+		static std::vector<T> Linspace(double min, double max, int num)
+		{
+			double space = (max - min) / (num - 1);
+			std::vector<T> output;
+			output.push_back(min);
+			T runningVal = min;
+			for (int i = 1; i<num; i++)
+			{
+				runningVal = runningVal + space;
+				output.push_back(runningVal);
+			}
+
+			return output;
 		}
 	};
 }

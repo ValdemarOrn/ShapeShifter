@@ -24,6 +24,9 @@
     <Filter Include="Source Files\Boost">
       <UniqueIdentifier>{f12ca6c0-1db0-4ff4-a972-2dd193c04469}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\IoFilter">
+      <UniqueIdentifier>{fc93dc62-6ef0-40a5-95f7-9cc031a8fa01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\dev\vst_sdk2_4\vstsdk2.4 clean\pluginterfaces\vst2.x\aeffect.h">
@@ -121,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="Boost\BoostKernel.h">
       <Filter>Source Files\Boost</Filter>
+    </ClInclude>
+    <ClInclude Include="IoFilter\IoFilter.h">
+      <Filter>Source Files\IoFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLib\Freqz.h">
+      <Filter>Source Files\AudioLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
