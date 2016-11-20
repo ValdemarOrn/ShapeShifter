@@ -1,6 +1,9 @@
 #include "EffectKernel.h"
 #include "Osc/OscMessage.h"
 #include <iostream>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include "Parameters.h"
 #include "AudioLib/ValueTables.h"
 
@@ -93,24 +96,13 @@ namespace Shapeshifter
 		if (!updated)
 			return;
 
-		if (updateHost && ParameterUpdateCallback)
-		{
-			ParameterUpdateCallback(parameter, value);
-		}
+		if (updateHost && UpdateParameterHostCallback)
+			UpdateParameterHostCallback(parameter, value);
 
 		if (updateGui)
-		{
-			std::string address = "/";
-			address += Parameters::ModuleNames[parameter.Module];
-			address += "/";
-			address += std::to_string(parameter.ParameterIndex);
-
-			Osc::OscMessage msg(address);
-			msg.SetFloat(ParameterStates[key].Value);
-			msg.SetString(ParameterStates[key].Display);
-			udpTranceiver->Send(msg.GetBytes());
-		}
+			SendParameterUpdateToGui(parameter);
 	}
+
 
 	void EffectKernel::SetParameter(int index, float value, bool updateHost, bool updateGui)
 	{
@@ -200,7 +192,6 @@ namespace Shapeshifter
 		return update;
 	}
 
-
 	// ------------------------------------------------------------------------------------
 
 	void EffectKernel::MessageListener()
@@ -222,9 +213,16 @@ namespace Shapeshifter
 						auto oscMsgs = Osc::OscMessage::ParseRawBytes(data);
 						auto oscMsg = oscMsgs.at(0);
 
-						float value = oscMsg.GetFloat(0);
-						auto param = Parameters::ParseOsc(oscMsg.Address);
-						SetParameter(param, value, true, true);
+						if (boost::starts_with(oscMsg.Address, "/Control/"))
+						{
+							HandleControlMessage(oscMsg);
+						}
+						else
+						{
+							float value = oscMsg.GetFloat(0);
+							auto param = Parameters::ParseOsc(oscMsg.Address);
+							SetParameter(param, value, true, true);
+						}
 					}
 					catch (std::exception ex)
 					{
@@ -249,6 +247,53 @@ namespace Shapeshifter
 
 			std::this_thread::sleep_for(sleepTime);
 		}
+	}
+	
+	void EffectKernel::HandleControlMessage(Osc::OscMessage msg)
+	{
+		auto parts = Utility::SplitString(msg.Address, '/');
+		if (parts[1] != "Control")
+			return;
+
+		auto command = parts[2];
+		if (command == "RequestUpdate")
+			UpdateGui(true, true, true);
+	}
+
+	void EffectKernel::UpdateGui(bool programName, bool values, bool plots)
+	{
+		// programname == todo
+
+		if (values)
+		{
+			for (auto para : ParameterStates)
+			{
+				int key = para.first;
+				SendParameterUpdateToGui(Parameter(key));
+			}
+		}
+
+		if (plots)
+		{
+			auto respString = inputFilter.GetMagnitudeString(100);
+			Osc::OscMessage msg("/Control/InputFilterResponse");
+			msg.SetString(respString);
+			udpTranceiver->Send(msg.GetBytes());
+		}
+	}
+	
+	void EffectKernel::SendParameterUpdateToGui(Parameter parameter)
+	{
+		auto key = parameter.GetKey();
+		std::string address = "/";
+		address += Parameters::ModuleNames[parameter.Module];
+		address += "/";
+		address += std::to_string(parameter.ParameterIndex);
+
+		Osc::OscMessage msg(address);
+		msg.SetFloat(ParameterStates[key].Value);
+		msg.SetString(ParameterStates[key].Display);
+		udpTranceiver->Send(msg.GetBytes());
 	}
 
 	void EffectKernel::SetupParameters()

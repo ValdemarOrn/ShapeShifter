@@ -155,7 +155,7 @@ void VstComponent::createDevice()
 	}
 
 	instance = new EffectKernel(sampleRate, 64);
-	instance->ParameterUpdateCallback = [&](Parameter para, float val)
+	instance->UpdateParameterHostCallback = [&](Parameter para, float val)
 	{
 		// this maps the PArameter back to the vst param index and sends update to host (From gui, usually)
 		auto key = para.GetKey();

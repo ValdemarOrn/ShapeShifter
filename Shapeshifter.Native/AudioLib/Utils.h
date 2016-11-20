@@ -292,6 +292,48 @@ namespace AudioLib
 
 			return output;
 		}
+
+		template<typename T>
+		static std::vector<T> Octavespace(double start, double max, int pointsPerOctave)
+		{
+			std::vector<T> output;
+			auto pto = (double)pointsPerOctave;
+
+			int i = 0;
+			while (true)
+			{
+				double n = i / pto;
+				auto val = start * std::pow(2, n);
+				if (val > max)
+					break;
+
+				output.push_back(val);
+				i++;
+			}
+
+			return output;
+		}
+
+		template<typename T>
+		static std::vector<double> Decadespace(double start, double max, int pointsPerDecade)
+		{
+			std::vector<T> output;
+			auto ptd = (double)pointsPerDecade;
+
+			int i = 0;
+			while (true)
+			{
+				double n = i / ptd;
+				auto val = start * std::pow(10, n);
+				if (val > max)
+					break;
+
+				output.push_back(val);
+				i++;
+			}
+
+			return output;
+		}
 	};
 }
 

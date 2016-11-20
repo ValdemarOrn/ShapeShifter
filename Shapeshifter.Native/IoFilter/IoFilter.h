@@ -87,13 +87,13 @@ namespace IoFilter
 			auto sLow = Utils::ToMatlabString(fs, lowCutShelf.GetB(), lowCutShelf.GetA());
 			auto sHigh = Utils::ToMatlabString(fs, highCutShelf.GetB(), highCutShelf.GetA());
 
-			auto respo = GetMagnitudeString(2000);
+			auto respo = GetMagnitudeString(20);
 		}
 
-		vector<FreqzPoint> GetResponse (int numPoints)
+		vector<FreqzPoint> GetResponse (int pointsPerDecade)
 		{
-			auto f1 = Freqz::Compute(lowCutShelf.GetB(), lowCutShelf.GetA(), numPoints);
-			auto f2 = Freqz::Compute(highCutShelf.GetB(), highCutShelf.GetA(), numPoints);
+			auto f1 = Freqz::Compute(lowCutShelf.GetB(), lowCutShelf.GetA(), 10.0, fs, pointsPerDecade);
+			auto f2 = Freqz::Compute(highCutShelf.GetB(), highCutShelf.GetA(), 10.0, fs, pointsPerDecade);
 			
 			vector<FreqzPoint> output;
 
@@ -109,9 +109,9 @@ namespace IoFilter
 			return output;
 		}
 
-		std::string GetMagnitudeString(int numPoints)
+		std::string GetMagnitudeString(int pointsPerDecade)
 		{
-			auto resp = GetResponse(numPoints);
+			auto resp = GetResponse(pointsPerDecade);
 
 			std::stringstream str;
 

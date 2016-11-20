@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -47,8 +48,9 @@ namespace Shapeshifter.Ui
                 .ToDictionary(x => x, x => new ToggleState(x, updateSelectedModule));
 
             SetModule(EffectModule.NoiseGate);
+            RequestFullUpdate();
         }
-
+        
         public string ProgramName
         {
             get { return programName; }
@@ -117,10 +119,41 @@ namespace Shapeshifter.Ui
             Console.WriteLine(msg.ToString());
 
             var parts = msg.Address.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            var module = (EffectModule)Enum.Parse(typeof(EffectModule), parts[0]);
-            var index = Convert.ToInt32(parts[1]);
-            UpdateParameterFeedback(module, index, (float)msg.Arguments[0], (string)msg.Arguments[1]);
 
+            if (parts[0] == "Control")
+                ProcessControlMessage(msg);
+
+            EffectModule module;
+            var ok = Enum.TryParse<EffectModule>(parts[0], out module);
+            if (ok)
+            {
+                var index = Convert.ToInt32(parts[1]);
+                UpdateParameterFeedback(module, index, (float)msg.Arguments[0], (string)msg.Arguments[1]);
+            }
+        }
+
+        private void ProcessControlMessage(OscMessage msg)
+        {
+            var parts = msg.Address.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts[0] != "Control" || parts.Length < 2)
+                return;
+
+            if (parts[1] == "InputFilterResponse")
+            {
+                var points = msg.Arguments[0] as string;
+                var values = points
+                    .Split(',')
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => double.Parse(x, CultureInfo.InvariantCulture))
+                    .ToArray();
+            }
+
+        }
+
+        private void RequestFullUpdate()
+        {
+            var address = "/Control/RequestUpdate";
+            sendMessages[address] = new OscMessage(address);
         }
 
         private void UpdateParameterFeedback(EffectModule module, int parameterIndex, float value, string display)

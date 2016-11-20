@@ -7,6 +7,8 @@
 #include "NoiseGate/NoiseGateKernel.h"
 #include "Boost/BoostKernel.h"
 #include "IoFilter/IoFilter.h"
+#include "Osc/OscMessage.h"
+#include <algorithm>
 
 namespace Shapeshifter
 {
@@ -39,7 +41,7 @@ namespace Shapeshifter
 	public:
 		
 		std::map<int, Parameter> IndexToParameter;
-		std::function<void(Parameter, float)> ParameterUpdateCallback;
+		std::function<void(Parameter, float)> UpdateParameterHostCallback;
 
 		EffectKernel(double fs, int bufferSize);
 		~EffectKernel();
@@ -55,7 +57,10 @@ namespace Shapeshifter
 	private:
 		bool ApplyNoiseGateParameter(int parameter_index, float value);
 		bool ApplyBoostParameter(int parameter_index, float value);
-		
+
+		void HandleControlMessage(Osc::OscMessage msg);
+		void UpdateGui(bool programName, bool values, bool plots);
+		void SendParameterUpdateToGui(Parameter parameter);
 		void MessageListener();
 		void SetupParameters();
 	};

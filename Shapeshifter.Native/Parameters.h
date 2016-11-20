@@ -16,7 +16,7 @@ enum class EffectModule
 	OutputStage,
 	GraphicEq,
 	Cabinet,
-	Global
+	Global,
 };
 
 enum class ParametersNoiseGate
@@ -93,14 +93,17 @@ public:
 		auto parts = Utility::SplitString(address, '/');
 		EffectModule module = EffectModule::None;
 
+		int index = 0;
 		auto moduleString = parts.at(1);
-		int index = std::stoi(parts.at(2));
-		
+				
 		for (auto kvp : ModuleNames)
 		{
 			if (kvp.second == moduleString)
 				module = kvp.first;
 		}
+
+		if (module != EffectModule::None)
+			index = std::stoi(parts.at(2));
 
 		Parameter output;
 		output.Module = module;

@@ -34,6 +34,24 @@ namespace AudioLib
 			for (size_t i = 0; i < ws.size(); i++)
 				ws[i] *= scaler;
 			
+			return Compute(b, a, ws);
+		}
+
+		template<typename T>
+		static vector<FreqzPoint> Compute(vector<T> b, vector<T> a, double minFrequency, double fs, int pointsPerDecade)
+		{
+			auto ws = Utils::Decadespace<double>(minFrequency, fs / 2, pointsPerDecade);
+
+			double scaler = 1.0 / (fs * 0.5) * M_PI;
+			for (size_t i = 0; i < ws.size(); i++)
+				ws[i] *= scaler;
+
+			return Compute(b, a, ws);
+		}
+
+		template<typename T>
+		static vector<FreqzPoint> Compute(vector<T> b, vector<T> a, vector<double> ws)
+		{
 			vector<FreqzPoint> output;
 
 			for (int i = 0; i < ws.size(); i++)
@@ -44,14 +62,14 @@ namespace AudioLib
 				complex<double> bSum = 0;
 				complex<double> aSum = 0;
 
-				for(auto bb : b)
+				for (auto bb : b)
 				{
 					ww *= w;
 					bSum += ((double)bb) * ww;
 				}
 
 				ww = 1;
-				for(auto aa : a)
+				for (auto aa : a)
 				{
 					ww *= w;
 					aSum += ((double)aa) * ww;
@@ -60,10 +78,10 @@ namespace AudioLib
 				auto div = (bSum / aSum);
 				double mag = std::abs(div);
 				double ang = std::arg(div);
-				
+
 				output.push_back(FreqzPoint(wReal, mag, ang));
 			}
-			
+
 			return output;
 		}
 	};
