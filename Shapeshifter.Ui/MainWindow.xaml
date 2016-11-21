@@ -11,7 +11,7 @@
         ResizeMode="NoResize"
         BorderBrush="#999"
         BorderThickness="1"
-        Title="MainWindow" Height="230" Width="900">
+        Title="MainWindow" Height="210" Width="900">
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#f7f7f7" Offset="0.0" />
@@ -28,8 +28,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
-                            <Label Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" 
+                        <Border Background="{TemplateBinding Background}" CornerRadius="0">
+                            <Label Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" VerticalAlignment="Center"
                                    Padding="{TemplateBinding Padding}" FontWeight="{TemplateBinding FontWeight}">
                                 <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"></ContentPresenter>
                             </Label>
@@ -38,18 +38,19 @@
                 </Setter.Value>
             </Setter>
             <Setter Property="FontFamily" Value="Open Sans Light" />
-            <Setter Property="Foreground" Value="CornflowerBlue" />
+            <Setter Property="Foreground" Value="#666666" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Margin" Value="0,0,6,0" />
-            <Setter Property="Padding" Value="5,3" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="8,3" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#306495ED" />
+                    <Setter Property="Foreground" Value="#424242" />
+                    <Setter Property="Background" Value="#07000000" />
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Foreground" Value="#555"/>
-                    <Setter Property="Background" Value="#11000000" />
+                    <Setter Property="Foreground" Value="#424242"/>
+                    <Setter Property="Background" Value="#1C000000" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -88,37 +89,47 @@
             <ColumnDefinition Width="2.2*" />
         </Grid.ColumnDefinitions>
 
-        <Grid Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#eee">
-            <Label Padding="0" Margin="10,0,0,0" VerticalAlignment="Center">Shapeshifter Digital - Designed by Valdemar Erlingsson</Label>
-            <Ellipse Style="{StaticResource ExitStyle}" MouseDown="ExitHandler">
-            </Ellipse>
+        <Grid Height="28" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#10000000">
+            <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="True" Margin="0,0,10,0">ENABLED</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding Page1Selected, FallbackValue=true}">PAGE 1</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding Page2Selected}" Visibility="{Binding Page2Visible, Converter={StaticResource bvc}}">PAGE 2</ToggleButton>
+            </StackPanel>
+
+            <StackPanel Grid.ColumnSpan="6" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="0">
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[NoiseGate].IsSelected}">NOISE</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Compressor].IsSelected, FallbackValue=true}">COMP</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[InputFilter].IsSelected}">INFILTER</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Boost].IsSelected}">BOOST</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Preamplifier].IsSelected}">PREAMP</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[OutputFilter].IsSelected}">OUTFILT</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[OutputStage].IsSelected}">POSTGAIN</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[GraphicEq].IsSelected}">GEQ</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Cabinet].IsSelected}">CAB</ToggleButton>
+                <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Global].IsSelected}">GLOBAL</ToggleButton>
+            </StackPanel>
         </Grid>
 
         <wpfUi:PlotView Data="{Binding PlotData}" Margin="10,30,10,35" MinY="-15" MaxY="6"
                          Visibility="{Binding ShowInputFilterPlot, Converter={StaticResource bvc}}"/>
         
-        <Grid Grid.Column="0" Grid.Row="0" Margin="10,25,0,0" Visibility="{Binding ShowProgramData, Converter={StaticResource bvc}}">
+        <Grid Grid.Column="0" Grid.Row="0" Margin="10,0,0,0" Visibility="{Binding ShowProgramData, Converter={StaticResource bvc}}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="10" />
+                <RowDefinition Height="35" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="1" FontSize="28" Content="{Binding ProgramName, FallbackValue=Program Name}" />
+            <Label Grid.Row="1" Margin="0,0,0,0" FontSize="28" Content="{Binding ProgramName, FallbackValue=Program Name}" />
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <Label Foreground="#bbb">Triple Stage</Label>
                 <Label Foreground="#bbb">4x12 Slanted Stereo</Label>
             </StackPanel>
 
-            <Label Grid.Row="2" HorizontalAlignment="Left" Padding="0" Margin="5,0,0,35" VerticalAlignment="Bottom">Enabled</Label>
+            <Label Grid.Row="2" Padding="0" Margin="5,0,0,15" VerticalAlignment="Bottom">Shapeshifter Digital 1.0</Label>
         </Grid>
-
-        <StackPanel Grid.ColumnSpan="2" Margin="10,5" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding Page1Selected}">Page 1</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding Page2Selected}" Visibility="{Binding Page2Visible, Converter={StaticResource bvc}}">Page 2</ToggleButton>
-        </StackPanel>
-
+        
         <Grid Grid.Column="1" Grid.Row="0" Margin="0,25,10,0" x:Name="KnobGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="10" />
@@ -138,28 +149,28 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[0].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[0].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[0].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[1].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[1].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[1].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[2].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[2].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[2].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[3].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[3].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[3].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[4].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[4].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[4].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[5].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[5].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[5].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="6" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[6].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[6].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[6].Name, FallbackValue=Param0}" />
             </Label>
-            <Label Grid.Row="1" Grid.Column="7" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[7].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
+            <Label Grid.Row="1" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding KnobState[7].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" >
                 <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding KnobState[7].Name, FallbackValue=Param0}" />
             </Label>
 
@@ -183,17 +194,6 @@
 
         </Grid>
 
-        <StackPanel Grid.ColumnSpan="6" Margin="0,5,0,5" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[NoiseGate].IsSelected}">Noise</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Compressor].IsSelected}">Compressor</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[InputFilter].IsSelected}">Input Filter</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Boost].IsSelected}">Boost</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Preamplifier].IsSelected}">Preamp</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[OutputFilter].IsSelected}">Output Filter</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[OutputStage].IsSelected}">Output Stage</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[GraphicEq].IsSelected}">Graphic EQ</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Cabinet].IsSelected}">Cabinet</ToggleButton>
-            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding SelectedModule[Global].IsSelected}">Global</ToggleButton>
-        </StackPanel>
+        
     </Grid>
 </Window>

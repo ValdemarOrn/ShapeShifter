@@ -92,6 +92,10 @@ namespace Shapeshifter
 		{
 			updated = ApplyBoostParameter(parameter.ParameterIndex, value);
 		}
+		else if (parameter.Module == EffectModule::InputFilter)
+		{
+			updated = ApplyInputFilterParameter(parameter.ParameterIndex, value);
+		}
 
 		if (!updated)
 			return;
@@ -182,6 +186,78 @@ namespace Shapeshifter
 			ParameterStates[key].Display = boost.GetClipperName();
 			break;
 		
+		default:
+			update = false;
+		}
+
+		if (update)
+			noiseGate.UpdateAll();
+
+		return update;
+	}
+
+	bool EffectKernel::ApplyInputFilterParameter(int index, float value)
+	{
+		auto key = Parameter(EffectModule::InputFilter, index).GetKey();
+		auto p = static_cast<ParametersIoFilter>(index);
+		double tempVal = 0.0;
+		bool update = true;
+
+		switch (p)
+		{
+		case ParametersIoFilter::LowCutType:
+			inputFilter.LowCut = (IoFilter::CutType)(int)(value * 2.999);
+			ParameterStates[key].Display = IoFilter::IoFilterKernel::GetCutTypeName(inputFilter.LowCut);
+			break;
+		case ParametersIoFilter::LowCutFreq:
+			inputFilter.LowCutFreq = 40 + ValueTables::Get(value, ValueTables::Response2Oct) * 460;
+			ParameterStates[key].Display = Utility::SPrint("%.0f Hz", inputFilter.LowCutFreq);
+			break;
+		case ParametersIoFilter::LowCutDB:
+			inputFilter.LowCutdB = -18 + value * 36;
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", inputFilter.LowCutdB);
+			break;
+
+		case ParametersIoFilter::HighCutType:
+			inputFilter.HighCut = (IoFilter::CutType)(int)(value * 2.999);
+			ParameterStates[key].Display = IoFilter::IoFilterKernel::GetCutTypeName(inputFilter.HighCut);
+			break;
+		case ParametersIoFilter::HighCutFreq:
+			inputFilter.HighCutFreq = 2000 + ValueTables::Get(value, ValueTables::Response2Oct) * 18000;
+			ParameterStates[key].Display = Utility::SPrint("%.0f Hz", inputFilter.HighCutFreq);
+			break;
+		case ParametersIoFilter::HighCutDB:
+			inputFilter.HighCutdB = -18 + value * 36;
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", inputFilter.HighCutdB);
+			break;
+
+		case ParametersIoFilter::Peak1Q:
+			inputFilter.Peak1Q = 0.1 + ValueTables::Get(value, ValueTables::Response2Oct) * 1.9;
+			ParameterStates[key].Display = Utility::SPrint("%.2f", inputFilter.Peak1Q);
+			break;
+		case ParametersIoFilter::Peak1Freq:
+			inputFilter.Peak1Freq = 250 + ValueTables::Get(value, ValueTables::Response2Oct) * 750;
+			ParameterStates[key].Display = Utility::SPrint("%.0f Hz", inputFilter.Peak1Freq);
+			break;
+		case ParametersIoFilter::Peak1Gain:
+			inputFilter.Peak1Gain = -18 + value * 36;
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", inputFilter.Peak1Gain);
+			break;
+
+		case ParametersIoFilter::Peak2Q:
+			inputFilter.Peak2Q = 0.1 + ValueTables::Get(value, ValueTables::Response2Oct) * 1.9;
+			ParameterStates[key].Display = Utility::SPrint("%.2f", inputFilter.Peak2Q);
+			break;
+		case ParametersIoFilter::Peak2Freq:
+			inputFilter.Peak2Freq = 500 + ValueTables::Get(value, ValueTables::Response2Oct) * 2000;
+			ParameterStates[key].Display = Utility::SPrint("%.0f Hz", inputFilter.Peak2Freq);
+			break;
+		case ParametersIoFilter::Peak2Gain:
+			inputFilter.Peak2Gain = -18 + value * 36;
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", inputFilter.Peak2Gain);
+			break;
+		
+
 		default:
 			update = false;
 		}

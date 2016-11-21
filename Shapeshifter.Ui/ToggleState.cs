@@ -29,8 +29,7 @@ namespace Shapeshifter.Ui
                 isSelected = true;
                 NotifyPropertyChanged();
 
-                if (last != IsSelected)
-                    onUpdate?.Invoke(this);
+                onUpdate?.Invoke(this);
             }
         }
 

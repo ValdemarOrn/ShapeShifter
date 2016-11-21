@@ -57,6 +57,7 @@ namespace Shapeshifter
 	private:
 		bool ApplyNoiseGateParameter(int parameter_index, float value);
 		bool ApplyBoostParameter(int parameter_index, float value);
+		bool ApplyInputFilterParameter(int parameter_index, float value);
 
 		void HandleControlMessage(Osc::OscMessage msg);
 		void UpdateGui(bool programName, bool values, bool plots);

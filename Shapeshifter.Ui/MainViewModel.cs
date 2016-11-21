@@ -33,6 +33,7 @@ namespace Shapeshifter.Ui
 
         public MainViewModel()
         {
+            ShowProgramData = true;
             ProgramName = "Program 1";
             allParameterValues = new Dictionary<int, double>();
             allParameterDisplays = new Dictionary<int, string>();
@@ -43,13 +44,21 @@ namespace Shapeshifter.Ui
 
             Action<ToggleState> updateSelectedModule = mod =>
             {
+                if (mod.Module == CurrentModule)
+                {
+                    // Toggle page when clicking same module
+                    SetSelectedPage(page1Selected ? 2 : 1);
+                    UpdateKnobView();
+                    return;
+                }
+
                 foreach (var kvp in SelectedModule)
                 {
                     if (kvp.Key != mod.Module)
                         kvp.Value.Unset();
                 }
 
-                page1Selected = true;
+                SetSelectedPage(1);
                 CurrentModule = mod.Module;
                 UpdateKnobView();
             };
@@ -59,6 +68,7 @@ namespace Shapeshifter.Ui
 
             Page1Selected = true;
             CurrentModule = EffectModule.NoiseGate;
+            SelectedModule[CurrentModule].IsSelected = true;
             UpdateKnobView();
             RequestFullUpdate();
         }
@@ -172,6 +182,15 @@ namespace Shapeshifter.Ui
         {
             get { return page2Visible; }
             set { page2Visible = value; NotifyPropertyChanged(); }
+        }
+
+        private void SetSelectedPage(int pageNumber1Or2)
+        {
+            var p2 = pageNumber1Or2 == 2 && page2Visible;
+            page1Selected = !p2;
+            page2Selected = p2;
+            NotifyPropertyChanged(nameof(Page1Selected));
+            NotifyPropertyChanged(nameof(Page2Selected));
         }
 
         private void SetFocusParameter(EffectModule module, int parameterIndex)
@@ -310,7 +329,6 @@ namespace Shapeshifter.Ui
         private void UpdateKnobView()
         {
             var module = CurrentModule;
-            SelectedModule[module].IsSelected = true;
             var page = page1Selected ? 0 : 1;
 
             var controls = ControlMap.Map

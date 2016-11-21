@@ -3,10 +3,10 @@
 
 std::map<EffectModule, int> Parameters::ModuleParamCount =
 { 
-	{ EffectModule::NoiseGate, 6 },
-	{ EffectModule::Compressor, 6 },
-	{ EffectModule::InputFilter, 6 },
-	{ EffectModule::Boost, 6 },
+	{ EffectModule::NoiseGate, (int)ParametersNoiseGate::Count },
+	{ EffectModule::Compressor, (int)6 },
+	{ EffectModule::InputFilter, (int)ParametersIoFilter::Count },
+	{ EffectModule::Boost, (int)ParametersBoost::Count },
 	{ EffectModule::Preamplifier, 6 },
 	{ EffectModule::OutputFilter, 6 },
 	{ EffectModule::OutputStage, 6 },

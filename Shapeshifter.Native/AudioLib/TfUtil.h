@@ -53,7 +53,7 @@ namespace AudioLib
 			za = newZa;
 		}
 
-		double Process1(double x0, bool updateInternalState = true)
+		__forceinline double Process1(double x0, bool updateInternalState = true)
 		{
 			double y0 = zb[0] * x0 + zb[1] * x1
 				- za[1] * y1;
@@ -68,7 +68,7 @@ namespace AudioLib
 			return y0;
 		}
 
-		double Process2(double x0, bool updateInternalState = true)
+		__forceinline double Process2(double x0, bool updateInternalState = true)
 		{
 			double y0 = zb[0] * x0 + zb[1] * x1 + zb[2] * x2
 				- za[1] * y1 - za[2] * y2;
@@ -85,7 +85,7 @@ namespace AudioLib
 			return y0;
 		}
 
-		double Process3(double x0, bool updateInternalState = true)
+		__forceinline double Process3(double x0, bool updateInternalState = true)
 		{
 			double y0 = zb[0] * x0 + zb[1] * x1 + zb[2] * x2 + zb[3] * x3
 				- za[1] * y1 - za[2] * y2 - za[3] * y3;
@@ -104,7 +104,7 @@ namespace AudioLib
 			return y0;
 		}
 
-		double Process4(double x0, bool updateInternalState = true)
+		__forceinline double Process4(double x0, bool updateInternalState = true)
 		{
 			double y0 = zb[0] * x0 + zb[1] * x1 + zb[2] * x2 + zb[3] * x3 + zb[4] * x4
 				- za[1] * y1 - za[2] * y2 - za[3] * y3 - za[4] * y4;
@@ -125,7 +125,7 @@ namespace AudioLib
 			return y0;
 		}
 
-		double Process5(double x0, bool updateInternalState = true)
+		__forceinline double Process5(double x0, bool updateInternalState = true)
 		{
 			double y0 = zb[0] * x0 + zb[1] * x1 + zb[2] * x2 + zb[3] * x3 + zb[4] * x4 + zb[5] * x5
 				- za[1] * y1 - za[2] * y2 - za[3] * y3 - za[4] * y4 - za[5] * y5;
@@ -148,7 +148,7 @@ namespace AudioLib
 			return y0;
 		}
 
-		double Process6(double x0, bool updateInternalState = true)
+		__forceinline double Process6(double x0, bool updateInternalState = true)
 		{
 			double y0 = zb[0] * x0 + zb[1] * x1 + zb[2] * x2 + zb[3] * x3 + zb[4] * x4 + zb[5] * x5 + zb[6] * x6
 				- za[1] * y1 - za[2] * y2 - za[3] * y3 - za[4] * y4 - za[5] * y5 - za[6] * y6;
