@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AudioLib.WpfUi;
 
 namespace Shapeshifter.Ui
 {
@@ -20,10 +21,32 @@ namespace Shapeshifter.Ui
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel vm;
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            vm = new MainViewModel();
+            DataContext = vm;
+
+            var knobs = ChildFinder.GetChildrenOfType<Knob2>(KnobGrid).ToArray();
+
+            foreach (var k in knobs)
+            {
+                k.MouseEnter += MouseOverKnob;
+                k.MouseLeave += MouseLeaveKnob;
+            }
+        }
+
+        private void MouseLeaveKnob(object sender, MouseEventArgs e)
+        {
+            vm.FocusedKnob = null;
+        }
+
+        private void MouseOverKnob(object sender, MouseEventArgs e)
+        {
+            var col = ((Knob2)sender).GetValue(Grid.ColumnProperty);
+            vm.FocusedKnob = (int)col;
         }
 
         private void ExitHandler(object sender, MouseButtonEventArgs e)

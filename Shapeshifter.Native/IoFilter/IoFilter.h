@@ -92,8 +92,8 @@ namespace IoFilter
 
 		vector<FreqzPoint> GetResponse (int pointsPerDecade)
 		{
-			auto f1 = Freqz::Compute(lowCutShelf.GetB(), lowCutShelf.GetA(), 10.0, fs, pointsPerDecade);
-			auto f2 = Freqz::Compute(highCutShelf.GetB(), highCutShelf.GetA(), 10.0, fs, pointsPerDecade);
+			auto f1 = Freqz::Compute(lowCutShelf.GetB(), lowCutShelf.GetA(), 30.0, fs, pointsPerDecade);
+			auto f2 = Freqz::Compute(highCutShelf.GetB(), highCutShelf.GetA(), 30.0, fs, pointsPerDecade);
 			
 			vector<FreqzPoint> output;
 

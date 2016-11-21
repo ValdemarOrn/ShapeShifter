@@ -22,6 +22,14 @@ namespace Shapeshifter.Ui
         private OscTranceiver tranceiver;
         private readonly ConcurrentDictionary<string, OscMessage> sendMessages;
         private volatile bool disableOscSend;
+        private IList<KeyValuePair<double, double>> plotData;
+        private int? focusedKnob;
+        private bool showInputFilterPlot;
+        private bool showProgramData;
+        private bool page1Selected;
+        private bool page2Selected;
+        private EffectModule currentModule;
+        private bool page2Visible;
 
         public MainViewModel()
         {
@@ -41,16 +49,33 @@ namespace Shapeshifter.Ui
                         kvp.Value.Unset();
                 }
 
-                SetModule(mod.Module);
+                page1Selected = true;
+                CurrentModule = mod.Module;
+                UpdateKnobView();
             };
 
             SelectedModule = Enum.GetValues(typeof(EffectModule)).Cast<EffectModule>()
                 .ToDictionary(x => x, x => new ToggleState(x, updateSelectedModule));
 
-            SetModule(EffectModule.NoiseGate);
+            Page1Selected = true;
+            CurrentModule = EffectModule.NoiseGate;
+            UpdateKnobView();
             RequestFullUpdate();
         }
-        
+
+        public EffectModule CurrentModule
+        {
+            get { return currentModule; }
+            set
+            {
+                currentModule = value;
+                NotifyPropertyChanged();
+
+                var pageCount = ControlMap.Map.Where(x => x.Module == currentModule).Select(x => x.Page).Distinct().Count();
+                Page2Visible = pageCount >= 2;
+            }
+        }
+
         public string ProgramName
         {
             get { return programName; }
@@ -67,8 +92,102 @@ namespace Shapeshifter.Ui
             set { knobState = value; NotifyPropertyChanged(); }
         }
 
+        public IList<KeyValuePair<double, double>> PlotData
+        {
+            get
+            {
+                return plotData;
+            }
+            set
+            {
+                plotData = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public Dictionary<EffectModule, ToggleState> SelectedModule { get; set; }
 
+        public int? FocusedKnob
+        {
+            get { return focusedKnob; }
+            set
+            {
+                focusedKnob = value;
+
+                if (focusedKnob.HasValue)
+                {
+                    var s = KnobState[focusedKnob.Value];
+                    SetFocusParameter(s.Module, s.ParameterIndex);
+                }
+                else
+                {
+                    SetFocusParameter(EffectModule.None, -1);
+                }
+            }
+        }
+
+        public bool ShowProgramData
+        {
+            get { return showProgramData; }
+            set { showProgramData = value; NotifyPropertyChanged(); }
+        }
+
+        public bool ShowInputFilterPlot
+        {
+            get { return showInputFilterPlot; }
+            set { showInputFilterPlot = value; NotifyPropertyChanged(); }
+        }
+
+        public bool Page1Selected
+        {
+            get { return page1Selected; }
+            set
+            {
+                if (!value)
+                    return;
+                page1Selected = value;
+                page2Selected = !value;
+                NotifyPropertyChanged(nameof(Page1Selected));
+                NotifyPropertyChanged(nameof(Page2Selected));
+                UpdateKnobView();
+            }
+        }
+
+        public bool Page2Selected
+        {
+            get { return page2Selected; }
+            set
+            {
+                if (!value)
+                    return;
+                page2Selected = value;
+                page1Selected = !value;
+                NotifyPropertyChanged(nameof(Page1Selected));
+                NotifyPropertyChanged(nameof(Page2Selected));
+                UpdateKnobView();
+            }
+        }
+
+        public bool Page2Visible
+        {
+            get { return page2Visible; }
+            set { page2Visible = value; NotifyPropertyChanged(); }
+        }
+
+        private void SetFocusParameter(EffectModule module, int parameterIndex)
+        {
+            if (module == EffectModule.NoiseGate && parameterIndex == 1)
+            {
+                ShowInputFilterPlot = true;
+                ShowProgramData = false;
+            }
+            else
+            {
+                ShowInputFilterPlot = false;
+                ShowProgramData = true;
+            }
+        }
+        
         private void ProcessOscMessages()
         {
             while (true)
@@ -124,7 +243,7 @@ namespace Shapeshifter.Ui
                 ProcessControlMessage(msg);
 
             EffectModule module;
-            var ok = Enum.TryParse<EffectModule>(parts[0], out module);
+            var ok = Enum.TryParse(parts[0], out module);
             if (ok)
             {
                 var index = Convert.ToInt32(parts[1]);
@@ -146,6 +265,8 @@ namespace Shapeshifter.Ui
                     .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Select(x => double.Parse(x, CultureInfo.InvariantCulture))
                     .ToArray();
+
+                PlotData = values.Select((x,i) => new KeyValuePair<double, double>(i, x)).ToArray();
             }
 
         }
@@ -186,12 +307,14 @@ namespace Shapeshifter.Ui
             }
         }
 
-        private void SetModule(EffectModule module)
+        private void UpdateKnobView()
         {
+            var module = CurrentModule;
             SelectedModule[module].IsSelected = true;
+            var page = page1Selected ? 0 : 1;
 
             var controls = ControlMap.Map
-                .Where(x => x.Module == module && x.Page == 0)
+                .Where(x => x.Module == module && x.Page == page)
                 .OrderBy(x => x.ParameterIndex)
                 .ToArray();
 

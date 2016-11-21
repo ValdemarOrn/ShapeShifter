@@ -46,6 +46,27 @@ enum class ParametersBoost
 	Count
 };
 
+enum class ParametersIoFilter
+{
+	LowCutType,
+	LowCutFreq,
+	LowCutDB,
+
+	HighCutType,
+	HighCutFreq,
+	HighCutDB,
+
+	Peak1Gain,
+	Peak1Freq,
+	Peak1Q,
+
+	Peak2Gain,
+	Peak2Freq,
+	Peak2Q,
+
+	Count
+};
+
 class Parameter
 {
 public:

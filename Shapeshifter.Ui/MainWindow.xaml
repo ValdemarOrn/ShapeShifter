@@ -7,11 +7,11 @@
         xmlns:wpfUi="clr-namespace:AudioLib.WpfUi;assembly=AudioLib"
         xmlns:ui="clr-namespace:LowProfile.Core.Ui;assembly=LowProfile.Core"
         mc:Ignorable="d"
-        WindowStyle="ToolWindow"
+        WindowStyle="SingleBorderWindow"
         ResizeMode="NoResize"
         BorderBrush="#999"
         BorderThickness="1"
-        Title="MainWindow" Height="240" Width="900">
+        Title="MainWindow" Height="230" Width="900">
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#f7f7f7" Offset="0.0" />
@@ -93,8 +93,11 @@
             <Ellipse Style="{StaticResource ExitStyle}" MouseDown="ExitHandler">
             </Ellipse>
         </Grid>
+
+        <wpfUi:PlotView Data="{Binding PlotData}" Margin="10,30,10,35" MinY="-15" MaxY="6"
+                         Visibility="{Binding ShowInputFilterPlot, Converter={StaticResource bvc}}"/>
         
-        <Grid Grid.Column="0" Grid.Row="0" Margin="10,25,0,0">
+        <Grid Grid.Column="0" Grid.Row="0" Margin="10,25,0,0" Visibility="{Binding ShowProgramData, Converter={StaticResource bvc}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="10" />
                 <RowDefinition Height="Auto" />
@@ -108,15 +111,15 @@
                 <Label Foreground="#bbb">4x12 Slanted Stereo</Label>
             </StackPanel>
 
-            <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,5,0,5" Orientation="Horizontal" HorizontalAlignment="Left">
-                <ToggleButton IsChecked="True" Style="{StaticResource LabelButton}">Page 1</ToggleButton>
-                <ToggleButton Style="{StaticResource LabelButton}">Page 2</ToggleButton>
-            </StackPanel>
-
-            <Label Grid.Row="2" HorizontalAlignment="Left" Padding="0" Margin="5,0,60,0" VerticalAlignment="Bottom">Enabled</Label>
+            <Label Grid.Row="2" HorizontalAlignment="Left" Padding="0" Margin="5,0,0,35" VerticalAlignment="Bottom">Enabled</Label>
         </Grid>
 
-        <Grid Grid.Column="1" Grid.Row="0" Margin="0,25,10,0">
+        <StackPanel Grid.ColumnSpan="2" Margin="10,5" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding Page1Selected}">Page 1</ToggleButton>
+            <ToggleButton Style="{StaticResource LabelButton}" IsChecked="{Binding Page2Selected}" Visibility="{Binding Page2Visible, Converter={StaticResource bvc}}">Page 2</ToggleButton>
+        </StackPanel>
+
+        <Grid Grid.Column="1" Grid.Row="0" Margin="0,25,10,0" x:Name="KnobGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="10" />
                 <RowDefinition Height="Auto" />
@@ -169,14 +172,14 @@
             <wpfUi:Knob2 Grid.Row="2" Grid.Column="6" Value="{Binding KnobState[6].Value}" Visibility="{Binding KnobState[6].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
             <wpfUi:Knob2 Grid.Row="2" Grid.Column="7" Value="{Binding KnobState[7].Value}" Visibility="{Binding KnobState[7].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
 
-            <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" Content="{Binding KnobState[0].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[0].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" Content="{Binding KnobState[1].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[1].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Content="{Binding KnobState[2].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[2].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" Content="{Binding KnobState[3].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[3].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" Content="{Binding KnobState[4].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[4].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="5" HorizontalAlignment="Center" Content="{Binding KnobState[5].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[5].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="6" HorizontalAlignment="Center" Content="{Binding KnobState[6].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[6].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
-            <Label Grid.Row="3" Grid.Column="7" HorizontalAlignment="Center" Content="{Binding KnobState[7].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[7].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="0" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[0].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[0].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="1" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[1].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[1].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="2" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[2].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[2].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="3" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[3].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[3].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="4" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[4].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[4].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="5" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[5].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[5].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="6" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[6].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[6].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
+            <Label Grid.Row="3" Grid.Column="7" Padding="1" HorizontalAlignment="Center" Content="{Binding KnobState[7].DisplayValue, FallbackValue=0.0}" Visibility="{Binding KnobState[7].IsVisible, FallbackValue=Visible, Converter={StaticResource bvc}}" />
 
         </Grid>
 
