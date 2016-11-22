@@ -71,10 +71,10 @@ namespace IoFilter
 			HighCut = CutType::OnePole;
 
 			LowCutFreq = 50.0;
-			LowCutdB = 12.0;
+			LowCutdB = 0;
 
 			HighCutFreq = 15000.0;
-			HighCutdB = 12.0;
+			HighCutdB = 0;
 
 			Peak1Freq = 500;
 			Peak1Gain = 0;
@@ -105,11 +105,11 @@ namespace IoFilter
 			highCut2Pole.Update(get<0>(twoPoleHighCut), get<1>(twoPoleHighCut));
 
 			lowCutShelf.Frequency = LowCutFreq;
-			lowCutShelf.SetGainDb(-LowCutdB);
+			lowCutShelf.SetGainDb(LowCutdB);
 			lowCutShelf.Update2();
 
 			highCutShelf.Frequency = HighCutFreq;
-			highCutShelf.SetGainDb(-HighCutdB);
+			highCutShelf.SetGainDb(HighCutdB);
 			highCutShelf.Update2();
 
 			peak1.Frequency = Peak1Freq;
@@ -133,7 +133,7 @@ namespace IoFilter
 			else if (LowCut == CutType::TwoPole)
 			{
 				for (size_t i = 0; i < count; i++)
-					buffer[i] = lowCut2Pole.Process1(input[i]);
+					buffer[i] = lowCut2Pole.Process2(input[i]);
 			}
 			else if (LowCut == CutType::Shelf)
 			{
@@ -142,7 +142,8 @@ namespace IoFilter
 			}
 			else
 			{
-				throw new std::exception();
+				for (size_t i = 0; i < count; i++)
+					buffer[i] = input[i];
 			}
 
 
@@ -161,7 +162,7 @@ namespace IoFilter
 			else if (HighCut == CutType::TwoPole)
 			{
 				for (size_t i = 0; i < count; i++)
-					output[i] = highCut2Pole.Process1(buffer[i]);
+					output[i] = highCut2Pole.Process2(buffer[i]);
 			}
 			else if (HighCut == CutType::Shelf)
 			{
@@ -170,7 +171,8 @@ namespace IoFilter
 			}
 			else
 			{
-				throw new std::exception();
+				for (size_t i = 0; i < count; i++)
+					output[i] = buffer[i];
 			}
 		}
 

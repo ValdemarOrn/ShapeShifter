@@ -42,6 +42,7 @@ enum class ParametersBoost
 	Mix,
 	Tightness,
 	Clipper,
+	OutputGain,
 
 	Count
 };

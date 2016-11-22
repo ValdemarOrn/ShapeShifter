@@ -49,6 +49,7 @@ namespace Shapeshifter.Ui
             new ControlInstance { Module = EffectModule.Boost, Page = 0, ParameterIndex = 2, Name = "Mix" },
             new ControlInstance { Module = EffectModule.Boost, Page = 0, ParameterIndex = 3, Name = "Tightness" },
             new ControlInstance { Module = EffectModule.Boost, Page = 0, ParameterIndex = 4, Name = "Clipper\r\nType" },
+            new ControlInstance { Module = EffectModule.Boost, Page = 0, ParameterIndex = 5, Name = "Output\r\nGain" },
 
         };
 

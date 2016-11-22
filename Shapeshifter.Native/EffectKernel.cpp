@@ -53,15 +53,19 @@ namespace Shapeshifter
 	void EffectKernel::ProcessBuffer(float* inL, float* inR, float* outL, float* outR, int count)
 	{
 		//noiseGate.Process(inL, inL, buffer1, count);
-		boost.Process(inL, buffer2, count);
+		
+		boost.Process(inL, buffer1, count);
+		inputFilter.Process(buffer1, buffer2, count);
 
 		Utils::Copy(buffer2, outL, count);
 		Utils::Copy(buffer2, outR, count);
 
+
+
 		/*for (int i = 0; i < count; i++)
 		{
-			outL[i] = AudioLib::Utils::Limit(outL[i] * 20, -1, 1);
-			outR[i] = AudioLib::Utils::Limit(outR[i] * 20, -1, 1);
+			outL[i] = AudioLib::Utils::Limit(inL[i] * 80, -3, 3);
+			outR[i] = AudioLib::Utils::Limit(inR[i] * 80, -3, 3);
 
 			//outL[i] = inL[i];
 			//outR[i] = inR[i];
@@ -185,13 +189,15 @@ namespace Shapeshifter
 			boost.SetClipper((Boost::ClipperType)(int)(value * 3.999));
 			ParameterStates[key].Display = boost.GetClipperName();
 			break;
+		case ParametersBoost::OutputGain:
+			tempVal = -20 + value * 40;
+			boost.OutputGain = Utils::DB2gain(tempVal);
+			ParameterStates[key].Display = Utility::SPrint("%.1f dB", tempVal);
+			break;
 		
 		default:
 			update = false;
 		}
-
-		if (update)
-			noiseGate.UpdateAll();
 
 		return update;
 	}
@@ -206,7 +212,7 @@ namespace Shapeshifter
 		switch (p)
 		{
 		case ParametersIoFilter::LowCutType:
-			inputFilter.LowCut = (IoFilter::CutType)(int)(value * 2.999);
+			inputFilter.LowCut = (IoFilter::CutType)(int)(value * 3.999);
 			ParameterStates[key].Display = IoFilter::IoFilterKernel::GetCutTypeName(inputFilter.LowCut);
 			break;
 		case ParametersIoFilter::LowCutFreq:
@@ -219,7 +225,7 @@ namespace Shapeshifter
 			break;
 
 		case ParametersIoFilter::HighCutType:
-			inputFilter.HighCut = (IoFilter::CutType)(int)(value * 2.999);
+			inputFilter.HighCut = (IoFilter::CutType)(int)(value * 3.999);
 			ParameterStates[key].Display = IoFilter::IoFilterKernel::GetCutTypeName(inputFilter.HighCut);
 			break;
 		case ParametersIoFilter::HighCutFreq:
@@ -263,7 +269,7 @@ namespace Shapeshifter
 		}
 
 		if (update)
-			noiseGate.UpdateAll();
+			inputFilter.UpdateAll();
 
 		return update;
 	}
